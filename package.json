@@ -1,0 +1,67 @@
+{
+  "name": "@kameleo/local-api-client",
+  "author": "Kameleo Team",
+  "description": "Official JavaScript/TypeScript library for interacting with Kameleo.CLI",
+  "version": "2.0.0",
+  "dependencies": {
+    "@azure/ms-rest-js": "^2.1.0",
+    "tslib": "^2.0.3"
+  },
+  "keywords": [
+    "kameleo",
+    "stealth browsing platform",
+    "selenium",
+    "webdriver",
+    "browser automation",
+    "web scraping",
+    "puppeteer",
+    "headless",
+    "chrome",
+    "firefox",
+    "chromium",
+    "safari",
+    "edge"
+  ],
+  "license": "MIT",
+  "main": "./dist/bundle.js",
+  "module": "./esm/main.js",
+  "types": "./esm/main.d.ts",
+  "devDependencies": {
+    "rollup": "^2.34.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "typescript": "^4.1.2",
+    "uglify-js": "^3.12.1"
+  },
+  "homepage": "https://kameleo.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kameleo-io/local-api-client-typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/kameleo-io/local-api-client-typescript/issues"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "esm/**/*.js",
+    "esm/**/*.js.map",
+    "esm/**/*.d.ts",
+    "esm/**/*.d.ts.map",
+    "src/**/*.ts",
+    "README.md",
+    "rollup.config.js",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "build": "tsc && rollup -c rollup.config.js && npm run minify",
+    "minify": "uglifyjs -c -m --comments --source-map \"content='./dist/bundle.js.map'\" -o ./dist/bundle.min.js ./dist/bundle.js",
+    "prepack": "npm install && npm run build"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}
