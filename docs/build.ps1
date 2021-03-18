@@ -1,0 +1,1 @@
+autorest --input-file=swagger.json --typescript --output-folder=.. --override-client-name=LocalApiClient --namespace=Kameleo.LocalApiClient
