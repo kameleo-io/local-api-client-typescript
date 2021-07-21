@@ -1,7 +1,7 @@
 <img src="docs/kameleo-logo.png" width="150" align="right" />
 
 # Kameleo Local API Client
-[Kameleo](https://kameleo.io) is a complete and integrated solution for browser fingerprinting protection, and also for easy browser automation using W3C WebDriver. This JavaScript/TypeScript package provides convenient access to the [Local API](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/2.0) REST interface of the Kameleo Client.
+[Kameleo](https://kameleo.io) is a complete and integrated solution for browser fingerprinting protection, and also for easy browser automation using W3C WebDriver. This JavaScript/TypeScript package provides convenient access to the [Local API](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/2.3) REST interface of the Kameleo Client.
 
 
 # Features
@@ -122,6 +122,7 @@ Several [examples](https://github.com/kameleo-io/local-api-examples) have been p
 - Saving/Loading a browsing session to/from a .kameleo file
 - Modify and Delete browser cookies
 - Hooking up Kameleo with an external browser (Puppeteer)
+- Start profile with extra webDriver capabilities
 
 
 # Endpoints
