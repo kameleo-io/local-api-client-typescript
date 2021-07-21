@@ -101,6 +101,7 @@ const { Builder, By } = require('selenium-webdriver');
     // Use any WebDriver command to drive the browser
     // and enjoy full protection from Selenium detection methods
     await webdriver.get("https://google.com");
+    await webdriver.findElement(By.css('div[aria-modal="true"][tabindex="0"] button:not([aria-label]):last-child')).click();
     await webdriver.findElement(By.name('q')).sendKeys("Kameleo\n");
     const title = await webdriver.getTitle();
     console.log(`The title is ${title}`);
