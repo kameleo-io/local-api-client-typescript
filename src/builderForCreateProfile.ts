@@ -9,7 +9,8 @@ import {
     Server,
     WebRtcSpoofingOptions,
     Value6,
-    Canvas
+    Canvas,
+    PasswordManager1
 } from './models';
 
 export class BuilderForCreateProfile {
@@ -145,6 +146,17 @@ export class BuilderForCreateProfile {
     }
 
     /**
+     * @summary <para>Enable or disable the password manager function in the browser. Possible values:</para>
+     * <para>'enabled': Enable password manager so browser will ask to save and load passwords on logins.</para>
+     * <para>'disable': Disable password manager.</para>
+     */
+     public setPasswordManager(value: PasswordManager1): BuilderForCreateProfile {
+        this.profileRequest.passwordManager = value;
+
+        return this;
+    }
+
+    /**
      * @summary <para>Tells the mode how the screen will be spoofed. Possible values:</para>
      * <para>'automatic': Automatically override the screen resolution based on the Base Profile.</para>
      * <para>'manual': Manually override the screen resolution.</para>
@@ -243,6 +255,7 @@ export class BuilderForCreateProfile {
                 value: "off",
                 extra: undefined,
             },
+            passwordManager: "disabled",
         };
     }
 }

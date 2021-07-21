@@ -8,7 +8,7 @@ import * as msRest from "@azure/ms-rest-js";
 import * as Models from "./models";
 
 const packageName = "";
-const packageVersion = "2.0.0";
+const packageVersion = "2.0.2";
 
 export class LocalApiClientContext extends msRest.ServiceClient {
 

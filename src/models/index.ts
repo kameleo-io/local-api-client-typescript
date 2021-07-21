@@ -7,41 +7,6 @@ import { ServiceClientOptions } from "@azure/ms-rest-js";
 import * as msRest from "@azure/ms-rest-js";
 
 /**
- * Provides possible values for base profile filtering. For example it tells what os languages are
- * available.
- */
-export interface BaseProfileSearchParameters {
-  /**
-   * List of possible device types. Possible values are 'desktop', 'mobile'.
-   */
-  deviceTypes: string[];
-  /**
-   * List of possible os families. Possible values are 'windows', 'macos', 'linux', 'android',
-   * 'ios'.
-   */
-  osFamilies: string[];
-  /**
-   * List of possible browser products. Possible values are 'chrome', 'firefox', 'edge', 'safari'.
-   */
-  browserProducts: string[];
-  /**
-   * List of possible os languages. It using the ISO 639-1 language code format.
-   */
-  languages: string[];
-}
-
-/**
- * An interface representing ProblemResponse.
- */
-export interface ProblemResponse {
-  /**
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
-   */
-  readonly code?: number;
-  error?: { [propertyName: string]: string[] };
-}
-
-/**
  * An interface representing Device.
  */
 export interface Device {
@@ -93,6 +58,41 @@ export interface Browser {
 }
 
 /**
+ * Representation of a base profile which is used to build profiles from.
+ */
+export interface BaseProfile {
+  /**
+   * The version of the base profile. As time passes new base profile versions will be introduced.
+   * It is recommended to use the latest one.
+   */
+  version: string;
+  /**
+   * The unique identifier of the base profile. You can use this as a reference to create a new
+   * profile from this base profile.
+   */
+  id: string;
+  device: Device;
+  os: Os;
+  browser: Browser;
+  /**
+   * Language of the base profile. Using ISO 639-1 language codes.
+   */
+  language: string;
+  /**
+   * The screen size of the device in pixels
+   */
+  resolution: string;
+  /**
+   * A list of font types included in the profile
+   */
+  fonts: string[];
+  /**
+   * A list of plugins included in the profile
+   */
+  plugins: string[];
+}
+
+/**
  * A preview object of a searched base profile. This contains some information about the base
  * profile that will help you choose the right one.
  */
@@ -109,6 +109,30 @@ export interface BaseProfilePreview {
    * Language of the base profile. Using ISO 639-1 language codes.
    */
   language: string;
+}
+
+/**
+ * Provides possible values for base profile filtering. For example it tells what os languages are
+ * available.
+ */
+export interface BaseProfileSearchParameters {
+  /**
+   * List of possible device types. Possible values are 'desktop', 'mobile'.
+   */
+  deviceTypes: string[];
+  /**
+   * List of possible os families. Possible values are 'windows', 'macos', 'linux', 'android',
+   * 'ios'.
+   */
+  osFamilies: string[];
+  /**
+   * List of possible browser products. Possible values are 'chrome', 'firefox', 'edge', 'safari'.
+   */
+  browserProducts: string[];
+  /**
+   * List of possible os languages. It using the ISO 639-1 language code format.
+   */
+  languages: string[];
 }
 
 /**
@@ -240,81 +264,6 @@ export interface CookieRequest {
    * browser session, i.e.it will be a non-persistent cookie.
    */
   expirationDate?: number;
-}
-
-/**
- * An interface representing UserInfoResponse.
- */
-export interface UserInfoResponse {
-  /**
-   * The guid of the user.
-   */
-  userId: string;
-  /**
-   * The email address of the authenticated user.
-   */
-  email: string;
-  /**
-   * The end date of the authenticated user's current subscription.
-   */
-  subscriptionEnd: Date;
-  /**
-   * The capabilities that the authenticated user owns thanks to his current subscription.
-   */
-  capabilities: string[];
-  /**
-   * The last date when the user authenticated by the app.
-   */
-  lastAppLogin?: Date;
-}
-
-/**
- * Status information about the profile
- */
-export interface StatusResponse {
-  /**
-   * Possible values include: 'unsaved', 'saved'
-   */
-  persistenceState: PersistenceState;
-  /**
-   * Possible values include: 'created', 'starting', 'running', 'terminating', 'terminated'
-   */
-  lifetimeState: LifetimeState;
-  /**
-   * In case of running profiles which use an external browser this shows the connection port (for
-   * mobile profiles as well).
-   */
-  externalSpoofingEnginePort?: number;
-}
-
-/**
- * A preview about the profile with some of its properties.
- */
-export interface ProfilePreview {
-  /**
-   * A unique identifier of the profile
-   */
-  id: string;
-  /**
-   * An absolute path where the related .kameleo profile file was accessed lastly. This is updated
-   * when a profile is saved to a .kameleo file, or loaded from a .kameleo file.
-   */
-  lastKnownPath?: string;
-  device: Device;
-  os: Os;
-  browser: Browser;
-  /**
-   * Language of the profile. This is derived from the base profile. Using ISO 639-1 language
-   * codes.
-   */
-  language: string;
-  /**
-   * The mode how the profile should be launched. It determines which browser to launch. This
-   * cannot be modified after creation. Possible values are 'automatic', 'chrome', 'chromium',
-   * 'firefox', 'edge', 'external'
-   */
-  launcher: string;
-  status: StatusResponse;
 }
 
 /**
@@ -506,6 +455,10 @@ export interface CreateProfileRequest {
    */
   startPage?: string;
   /**
+   * Possible values include: 'enabled', 'disabled'
+   */
+  passwordManager?: PasswordManager;
+  /**
    * A list of abolute paths from where the profile should load extensions or addons when starting
    * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
    * addons.
@@ -524,38 +477,87 @@ export interface CreateProfileRequest {
 }
 
 /**
- * Representation of a base profile which is used to build profiles from.
+ * Tells where the profile should be loaded from
  */
-export interface BaseProfile {
+export interface LoadProfileRequest {
   /**
-   * The version of the base profile. As time passes new base profile versions will be introduced.
-   * It is recommended to use the latest one.
+   * The path where the profile should be loaded from
    */
-  version: string;
+  path: string;
+}
+
+/**
+ * Represents a Key-Value pair where Value can be a string or a boolean or an integer
+ */
+export interface Preference {
   /**
-   * The unique identifier of the base profile. You can use this as a reference to create a new
-   * profile from this base profile.
+   * Key of the preference
+   */
+  key: string;
+  /**
+   * Value of the preference. It can a string or a boolean or an integer
+   */
+  value: any;
+}
+
+/**
+ * An interface representing ProblemResponse.
+ */
+export interface ProblemResponse {
+  /**
+   * **NOTE: This property will not be serialized. It can only be populated by the server.**
+   */
+  readonly code?: number;
+  error?: { [propertyName: string]: string[] };
+}
+
+/**
+ * Status information about the profile
+ */
+export interface StatusResponse {
+  /**
+   * Possible values include: 'unsaved', 'saved'
+   */
+  persistenceState: PersistenceState;
+  /**
+   * Possible values include: 'created', 'starting', 'running', 'terminating', 'terminated'
+   */
+  lifetimeState: LifetimeState;
+  /**
+   * In case of running profiles which use an external browser this shows the connection port (for
+   * mobile profiles as well).
+   */
+  externalSpoofingEnginePort?: number;
+}
+
+/**
+ * A preview about the profile with some of its properties.
+ */
+export interface ProfilePreview {
+  /**
+   * A unique identifier of the profile
    */
   id: string;
+  /**
+   * An absolute path where the related .kameleo profile file was accessed lastly. This is updated
+   * when a profile is saved to a .kameleo file, or loaded from a .kameleo file.
+   */
+  lastKnownPath?: string;
   device: Device;
   os: Os;
   browser: Browser;
   /**
-   * Language of the base profile. Using ISO 639-1 language codes.
+   * Language of the profile. This is derived from the base profile. Using ISO 639-1 language
+   * codes.
    */
   language: string;
   /**
-   * The screen size of the device in pixels
+   * The mode how the profile should be launched. It determines which browser to launch. This
+   * cannot be modified after creation. Possible values are 'automatic', 'chrome', 'chromium',
+   * 'firefox', 'edge', 'external'
    */
-  resolution: string;
-  /**
-   * A list of font types included in the profile
-   */
-  fonts: string[];
-  /**
-   * A list of plugins included in the profile
-   */
-  plugins: string[];
+  launcher: string;
+  status: StatusResponse;
 }
 
 /**
@@ -593,6 +595,10 @@ export interface ProfileResponse {
    */
   startPage: string;
   /**
+   * Possible values include: 'enabled', 'disabled'
+   */
+  passwordManager: PasswordManager1;
+  /**
    * A list of abolute paths from where the profile should load extensions or addons when starting
    * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
    * addons.
@@ -609,6 +615,37 @@ export interface ProfileResponse {
    */
   launcher: string;
   status: StatusResponse;
+}
+
+/**
+ * Tells where the profile should be saved
+ */
+export interface SaveProfileRequest {
+  /**
+   * The path where the profile should be saved.
+   */
+  path: string;
+}
+
+/**
+ * An interface representing TestProxyRequest.
+ */
+export interface TestProxyRequest {
+  proxy: ProxyConnectionTypeServerMultiLevelChoice;
+}
+
+/**
+ * An interface representing TestProxyResponse.
+ */
+export interface TestProxyResponse {
+  /**
+   * Tells weather the proxy is valid or not.
+   */
+  isValidProxy: boolean;
+  /**
+   * A written message about the result of the test.
+   */
+  message: string;
 }
 
 /**
@@ -632,6 +669,10 @@ export interface UpdateProfileRequest {
    */
   startPage: string;
   /**
+   * Possible values include: 'enabled', 'disabled'
+   */
+  passwordManager: PasswordManager2;
+  /**
    * A list of abolute paths from where the profile should load extensions or addons when starting
    * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
    * addons.
@@ -650,23 +691,52 @@ export interface UpdateProfileRequest {
 }
 
 /**
- * Tells where the profile should be saved
+ * An interface representing UserInfoResponse.
  */
-export interface SaveProfileRequest {
+export interface UserInfoResponse {
   /**
-   * The path where the profile should be saved.
+   * The guid of the user.
    */
-  path: string;
+  userId: string;
+  /**
+   * The email address of the authenticated user.
+   */
+  email: string;
+  /**
+   * The end date of the authenticated user's current subscription.
+   */
+  subscriptionEnd: Date;
+  /**
+   * The capabilities that the authenticated user owns thanks to his current subscription.
+   */
+  capabilities: string[];
+  /**
+   * The last date when the user authenticated by the app.
+   */
+  lastAppLogin?: Date;
 }
 
 /**
- * Tells where the profile should be loaded from
+ * Additional arguments, options and preferences that can be passed to the started WebDriver and
+ * browser.
  */
-export interface LoadProfileRequest {
+export interface WebDriverSettings {
   /**
-   * The path where the profile should be loaded from
+   * Command line switches that can be passed to the browser at startup. It is applicable for both
+   * chromium based browsers and for firefox.
    */
-  path: string;
+  argumentsProperty?: string[];
+  /**
+   * List of preferences for browsers that can be passed at startup. In case of Chromium based
+   * options it will be a user profile preference. In case of Firefox profiles it will be a
+   * preference.
+   */
+  preferences?: Preference[];
+  /**
+   * List of additional WebDriver options that can be passed at startup. It is applicable for both
+   * chromium based browsers and for firefox.
+   */
+  additionalOptions?: Preference[];
 }
 
 /**
@@ -740,6 +810,13 @@ export interface LocalApiClientAddCookiesOptionalParams extends msRest.RequestOp
 /**
  * Optional Parameters.
  */
+export interface LocalApiClientTestProxyOptionalParams extends msRest.RequestOptionsBase {
+  body?: TestProxyRequest;
+}
+
+/**
+ * Optional Parameters.
+ */
 export interface LocalApiClientCreateProfileOptionalParams extends msRest.RequestOptionsBase {
   body?: CreateProfileRequest;
 }
@@ -749,6 +826,13 @@ export interface LocalApiClientCreateProfileOptionalParams extends msRest.Reques
  */
 export interface LocalApiClientUpdateProfileOptionalParams extends msRest.RequestOptionsBase {
   body?: UpdateProfileRequest;
+}
+
+/**
+ * Optional Parameters.
+ */
+export interface LocalApiClientStartProfileWithWebDriverSettingsOptionalParams extends msRest.RequestOptionsBase {
+  body?: WebDriverSettings;
 }
 
 /**
@@ -764,22 +848,6 @@ export interface LocalApiClientSaveProfileOptionalParams extends msRest.RequestO
 export interface LocalApiClientLoadProfileOptionalParams extends msRest.RequestOptionsBase {
   body?: LoadProfileRequest;
 }
-
-/**
- * Defines values for PersistenceState.
- * Possible values include: 'unsaved', 'saved'
- * @readonly
- * @enum {string}
- */
-export type PersistenceState = 'unsaved' | 'saved';
-
-/**
- * Defines values for LifetimeState.
- * Possible values include: 'created', 'starting', 'running', 'terminating', 'terminated'
- * @readonly
- * @enum {string}
- */
-export type LifetimeState = 'created' | 'starting' | 'running' | 'terminating' | 'terminated';
 
 /**
  * Defines values for Value.
@@ -854,6 +922,30 @@ export type Value7 = 'automatic' | 'manual' | 'off';
 export type Canvas = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for PasswordManager.
+ * Possible values include: 'enabled', 'disabled'
+ * @readonly
+ * @enum {string}
+ */
+export type PasswordManager = 'enabled' | 'disabled';
+
+/**
+ * Defines values for PersistenceState.
+ * Possible values include: 'unsaved', 'saved'
+ * @readonly
+ * @enum {string}
+ */
+export type PersistenceState = 'unsaved' | 'saved';
+
+/**
+ * Defines values for LifetimeState.
+ * Possible values include: 'created', 'starting', 'running', 'terminating', 'terminated'
+ * @readonly
+ * @enum {string}
+ */
+export type LifetimeState = 'created' | 'starting' | 'running' | 'terminating' | 'terminated';
+
+/**
  * Defines values for Canvas1.
  * Possible values include: 'intelligent', 'noise', 'block', 'off'
  * @readonly
@@ -862,12 +954,28 @@ export type Canvas = 'intelligent' | 'noise' | 'block' | 'off';
 export type Canvas1 = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for PasswordManager1.
+ * Possible values include: 'enabled', 'disabled'
+ * @readonly
+ * @enum {string}
+ */
+export type PasswordManager1 = 'enabled' | 'disabled';
+
+/**
  * Defines values for Canvas2.
  * Possible values include: 'intelligent', 'noise', 'block', 'off'
  * @readonly
  * @enum {string}
  */
 export type Canvas2 = 'intelligent' | 'noise' | 'block' | 'off';
+
+/**
+ * Defines values for PasswordManager2.
+ * Possible values include: 'enabled', 'disabled'
+ * @readonly
+ * @enum {string}
+ */
+export type PasswordManager2 = 'enabled' | 'disabled';
 
 /**
  * Contains response data for the getBaseProfileSearchParameters operation.
@@ -966,6 +1074,26 @@ export type GetUserInfoResponse = UserInfoResponse & {
        * The response body as parsed JSON or XML
        */
       parsedBody: UserInfoResponse;
+    };
+};
+
+/**
+ * Contains response data for the testProxy operation.
+ */
+export type TestProxyResponse2 = TestProxyResponse & {
+  /**
+   * The underlying HTTP response.
+   */
+  _response: msRest.HttpResponse & {
+      /**
+       * The response body as text (string format)
+       */
+      bodyAsText: string;
+
+      /**
+       * The response body as parsed JSON or XML
+       */
+      parsedBody: TestProxyResponse;
     };
 };
 
@@ -1073,6 +1201,26 @@ export type GetProfileStatusResponse = StatusResponse & {
  * Contains response data for the startProfile operation.
  */
 export type StartProfileResponse = StatusResponse & {
+  /**
+   * The underlying HTTP response.
+   */
+  _response: msRest.HttpResponse & {
+      /**
+       * The response body as text (string format)
+       */
+      bodyAsText: string;
+
+      /**
+       * The response body as parsed JSON or XML
+       */
+      parsedBody: StatusResponse;
+    };
+};
+
+/**
+ * Contains response data for the startProfileWithWebDriverSettings operation.
+ */
+export type StartProfileWithWebDriverSettingsResponse = StatusResponse & {
   /**
    * The underlying HTTP response.
    */

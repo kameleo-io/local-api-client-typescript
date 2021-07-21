@@ -6,97 +6,6 @@
 import * as msRest from "@azure/ms-rest-js";
 
 
-export const BaseProfileSearchParameters: msRest.CompositeMapper = {
-  serializedName: "BaseProfileSearchParameters",
-  type: {
-    name: "Composite",
-    className: "BaseProfileSearchParameters",
-    modelProperties: {
-      deviceTypes: {
-        required: true,
-        serializedName: "deviceTypes",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      },
-      osFamilies: {
-        required: true,
-        serializedName: "osFamilies",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      },
-      browserProducts: {
-        required: true,
-        serializedName: "browserProducts",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      },
-      languages: {
-        required: true,
-        serializedName: "languages",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
-export const ProblemResponse: msRest.CompositeMapper = {
-  serializedName: "ProblemResponse",
-  type: {
-    name: "Composite",
-    className: "ProblemResponse",
-    modelProperties: {
-      code: {
-        readOnly: true,
-        serializedName: "code",
-        type: {
-          name: "Number"
-        }
-      },
-      error: {
-        serializedName: "error",
-        type: {
-          name: "Dictionary",
-          value: {
-            type: {
-              name: "Sequence",
-              element: {
-                type: {
-                  name: "String"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
 export const Device: msRest.CompositeMapper = {
   serializedName: "Device",
   type: {
@@ -183,6 +92,92 @@ export const Browser: msRest.CompositeMapper = {
   }
 };
 
+export const BaseProfile: msRest.CompositeMapper = {
+  serializedName: "BaseProfile",
+  type: {
+    name: "Composite",
+    className: "BaseProfile",
+    modelProperties: {
+      version: {
+        required: true,
+        serializedName: "version",
+        type: {
+          name: "String"
+        }
+      },
+      id: {
+        required: true,
+        serializedName: "id",
+        type: {
+          name: "String"
+        }
+      },
+      device: {
+        required: true,
+        serializedName: "device",
+        type: {
+          name: "Composite",
+          className: "Device"
+        }
+      },
+      os: {
+        required: true,
+        serializedName: "os",
+        type: {
+          name: "Composite",
+          className: "Os"
+        }
+      },
+      browser: {
+        required: true,
+        serializedName: "browser",
+        type: {
+          name: "Composite",
+          className: "Browser"
+        }
+      },
+      language: {
+        required: true,
+        serializedName: "language",
+        type: {
+          name: "String"
+        }
+      },
+      resolution: {
+        required: true,
+        serializedName: "resolution",
+        type: {
+          name: "String"
+        }
+      },
+      fonts: {
+        required: true,
+        serializedName: "fonts",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      plugins: {
+        required: true,
+        serializedName: "plugins",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const BaseProfilePreview: msRest.CompositeMapper = {
   serializedName: "BaseProfilePreview",
   type: {
@@ -225,6 +220,64 @@ export const BaseProfilePreview: msRest.CompositeMapper = {
         serializedName: "language",
         type: {
           name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const BaseProfileSearchParameters: msRest.CompositeMapper = {
+  serializedName: "BaseProfileSearchParameters",
+  type: {
+    name: "Composite",
+    className: "BaseProfileSearchParameters",
+    modelProperties: {
+      deviceTypes: {
+        required: true,
+        serializedName: "deviceTypes",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      osFamilies: {
+        required: true,
+        serializedName: "osFamilies",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      browserProducts: {
+        required: true,
+        serializedName: "browserProducts",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      languages: {
+        required: true,
+        serializedName: "languages",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
         }
       }
     }
@@ -380,154 +433,6 @@ export const CookieRequest: msRest.CompositeMapper = {
         serializedName: "expirationDate",
         type: {
           name: "Number"
-        }
-      }
-    }
-  }
-};
-
-export const UserInfoResponse: msRest.CompositeMapper = {
-  serializedName: "UserInfoResponse",
-  type: {
-    name: "Composite",
-    className: "UserInfoResponse",
-    modelProperties: {
-      userId: {
-        required: true,
-        serializedName: "userId",
-        type: {
-          name: "Uuid"
-        }
-      },
-      email: {
-        required: true,
-        serializedName: "email",
-        type: {
-          name: "String"
-        }
-      },
-      subscriptionEnd: {
-        required: true,
-        serializedName: "subscriptionEnd",
-        type: {
-          name: "DateTime"
-        }
-      },
-      capabilities: {
-        required: true,
-        serializedName: "capabilities",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      },
-      lastAppLogin: {
-        serializedName: "lastAppLogin",
-        type: {
-          name: "DateTime"
-        }
-      }
-    }
-  }
-};
-
-export const StatusResponse: msRest.CompositeMapper = {
-  serializedName: "StatusResponse",
-  type: {
-    name: "Composite",
-    className: "StatusResponse",
-    modelProperties: {
-      persistenceState: {
-        required: true,
-        serializedName: "persistenceState",
-        type: {
-          name: "String"
-        }
-      },
-      lifetimeState: {
-        required: true,
-        serializedName: "lifetimeState",
-        type: {
-          name: "String"
-        }
-      },
-      externalSpoofingEnginePort: {
-        serializedName: "externalSpoofingEnginePort",
-        type: {
-          name: "Number"
-        }
-      }
-    }
-  }
-};
-
-export const ProfilePreview: msRest.CompositeMapper = {
-  serializedName: "ProfilePreview",
-  type: {
-    name: "Composite",
-    className: "ProfilePreview",
-    modelProperties: {
-      id: {
-        required: true,
-        serializedName: "id",
-        type: {
-          name: "Uuid"
-        }
-      },
-      lastKnownPath: {
-        serializedName: "lastKnownPath",
-        type: {
-          name: "String"
-        }
-      },
-      device: {
-        required: true,
-        serializedName: "device",
-        type: {
-          name: "Composite",
-          className: "Device"
-        }
-      },
-      os: {
-        required: true,
-        serializedName: "os",
-        type: {
-          name: "Composite",
-          className: "Os"
-        }
-      },
-      browser: {
-        required: true,
-        serializedName: "browser",
-        type: {
-          name: "Composite",
-          className: "Browser"
-        }
-      },
-      language: {
-        required: true,
-        serializedName: "language",
-        type: {
-          name: "String"
-        }
-      },
-      launcher: {
-        required: true,
-        serializedName: "launcher",
-        type: {
-          name: "String"
-        }
-      },
-      status: {
-        required: true,
-        serializedName: "status",
-        type: {
-          name: "Composite",
-          className: "StatusResponse"
         }
       }
     }
@@ -928,6 +833,12 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      passwordManager: {
+        serializedName: "passwordManager",
+        type: {
+          name: "String"
+        }
+      },
       extensions: {
         serializedName: "extensions",
         type: {
@@ -955,22 +866,125 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
   }
 };
 
-export const BaseProfile: msRest.CompositeMapper = {
-  serializedName: "BaseProfile",
+export const LoadProfileRequest: msRest.CompositeMapper = {
+  serializedName: "LoadProfileRequest",
   type: {
     name: "Composite",
-    className: "BaseProfile",
+    className: "LoadProfileRequest",
     modelProperties: {
-      version: {
+      path: {
         required: true,
-        serializedName: "version",
+        serializedName: "path",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const Preference: msRest.CompositeMapper = {
+  serializedName: "Preference",
+  type: {
+    name: "Composite",
+    className: "Preference",
+    modelProperties: {
+      key: {
+        required: true,
+        serializedName: "key",
         type: {
           name: "String"
         }
       },
+      value: {
+        required: true,
+        serializedName: "value",
+        type: {
+          name: "Object"
+        }
+      }
+    }
+  }
+};
+
+export const ProblemResponse: msRest.CompositeMapper = {
+  serializedName: "ProblemResponse",
+  type: {
+    name: "Composite",
+    className: "ProblemResponse",
+    modelProperties: {
+      code: {
+        readOnly: true,
+        serializedName: "code",
+        type: {
+          name: "Number"
+        }
+      },
+      error: {
+        serializedName: "error",
+        type: {
+          name: "Dictionary",
+          value: {
+            type: {
+              name: "Sequence",
+              element: {
+                type: {
+                  name: "String"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const StatusResponse: msRest.CompositeMapper = {
+  serializedName: "StatusResponse",
+  type: {
+    name: "Composite",
+    className: "StatusResponse",
+    modelProperties: {
+      persistenceState: {
+        required: true,
+        serializedName: "persistenceState",
+        type: {
+          name: "String"
+        }
+      },
+      lifetimeState: {
+        required: true,
+        serializedName: "lifetimeState",
+        type: {
+          name: "String"
+        }
+      },
+      externalSpoofingEnginePort: {
+        serializedName: "externalSpoofingEnginePort",
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
+export const ProfilePreview: msRest.CompositeMapper = {
+  serializedName: "ProfilePreview",
+  type: {
+    name: "Composite",
+    className: "ProfilePreview",
+    modelProperties: {
       id: {
         required: true,
         serializedName: "id",
+        type: {
+          name: "Uuid"
+        }
+      },
+      lastKnownPath: {
+        serializedName: "lastKnownPath",
         type: {
           name: "String"
         }
@@ -1006,35 +1020,19 @@ export const BaseProfile: msRest.CompositeMapper = {
           name: "String"
         }
       },
-      resolution: {
+      launcher: {
         required: true,
-        serializedName: "resolution",
+        serializedName: "launcher",
         type: {
           name: "String"
         }
       },
-      fonts: {
+      status: {
         required: true,
-        serializedName: "fonts",
+        serializedName: "status",
         type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      },
-      plugins: {
-        required: true,
-        serializedName: "plugins",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
+          name: "Composite",
+          className: "StatusResponse"
         }
       }
     }
@@ -1153,6 +1151,13 @@ export const ProfileResponse: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      passwordManager: {
+        required: true,
+        serializedName: "passwordManager",
+        type: {
+          name: "String"
+        }
+      },
       extensions: {
         required: true,
         serializedName: "extensions",
@@ -1185,6 +1190,65 @@ export const ProfileResponse: msRest.CompositeMapper = {
         type: {
           name: "Composite",
           className: "StatusResponse"
+        }
+      }
+    }
+  }
+};
+
+export const SaveProfileRequest: msRest.CompositeMapper = {
+  serializedName: "SaveProfileRequest",
+  type: {
+    name: "Composite",
+    className: "SaveProfileRequest",
+    modelProperties: {
+      path: {
+        required: true,
+        serializedName: "path",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const TestProxyRequest: msRest.CompositeMapper = {
+  serializedName: "TestProxyRequest",
+  type: {
+    name: "Composite",
+    className: "TestProxyRequest",
+    modelProperties: {
+      proxy: {
+        required: true,
+        serializedName: "proxy",
+        type: {
+          name: "Composite",
+          className: "ProxyConnectionTypeServerMultiLevelChoice"
+        }
+      }
+    }
+  }
+};
+
+export const TestProxyResponse: msRest.CompositeMapper = {
+  serializedName: "TestProxyResponse",
+  type: {
+    name: "Composite",
+    className: "TestProxyResponse",
+    modelProperties: {
+      isValidProxy: {
+        required: true,
+        serializedName: "isValidProxy",
+        type: {
+          name: "Boolean"
+        }
+      },
+      message: {
+        required: true,
+        serializedName: "message",
+        type: {
+          name: "String"
         }
       }
     }
@@ -1275,6 +1339,13 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      passwordManager: {
+        required: true,
+        serializedName: "passwordManager",
+        type: {
+          name: "String"
+        }
+      },
       extensions: {
         serializedName: "extensions",
         type: {
@@ -1302,34 +1373,94 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
   }
 };
 
-export const SaveProfileRequest: msRest.CompositeMapper = {
-  serializedName: "SaveProfileRequest",
+export const UserInfoResponse: msRest.CompositeMapper = {
+  serializedName: "UserInfoResponse",
   type: {
     name: "Composite",
-    className: "SaveProfileRequest",
+    className: "UserInfoResponse",
     modelProperties: {
-      path: {
+      userId: {
         required: true,
-        serializedName: "path",
+        serializedName: "userId",
+        type: {
+          name: "Uuid"
+        }
+      },
+      email: {
+        required: true,
+        serializedName: "email",
         type: {
           name: "String"
+        }
+      },
+      subscriptionEnd: {
+        required: true,
+        serializedName: "subscriptionEnd",
+        type: {
+          name: "DateTime"
+        }
+      },
+      capabilities: {
+        required: true,
+        serializedName: "capabilities",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      lastAppLogin: {
+        serializedName: "lastAppLogin",
+        type: {
+          name: "DateTime"
         }
       }
     }
   }
 };
 
-export const LoadProfileRequest: msRest.CompositeMapper = {
-  serializedName: "LoadProfileRequest",
+export const WebDriverSettings: msRest.CompositeMapper = {
+  serializedName: "WebDriverSettings",
   type: {
     name: "Composite",
-    className: "LoadProfileRequest",
+    className: "WebDriverSettings",
     modelProperties: {
-      path: {
-        required: true,
-        serializedName: "path",
+      argumentsProperty: {
+        serializedName: "arguments",
         type: {
-          name: "String"
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      preferences: {
+        serializedName: "preferences",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "Preference"
+            }
+          }
+        }
+      },
+      additionalOptions: {
+        serializedName: "additionalOptions",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "Preference"
+            }
+          }
         }
       }
     }

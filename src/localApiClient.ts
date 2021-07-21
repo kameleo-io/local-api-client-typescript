@@ -230,6 +230,30 @@ class LocalApiClient extends LocalApiClientContext {
   }
 
   /**
+   * @summary Tests a provided proxy connection.
+   * @param [options] The optional parameters
+   * @returns Promise<Models.TestProxyResponse2>
+   */
+  testProxy(options?: Models.LocalApiClientTestProxyOptionalParams): Promise<Models.TestProxyResponse2>;
+  /**
+   * @param callback The callback
+   */
+  testProxy(callback: msRest.ServiceCallback<Models.TestProxyResponse>): void;
+  /**
+   * @param options The optional parameters
+   * @param callback The callback
+   */
+  testProxy(options: Models.LocalApiClientTestProxyOptionalParams, callback: msRest.ServiceCallback<Models.TestProxyResponse>): void;
+  testProxy(options?: Models.LocalApiClientTestProxyOptionalParams | msRest.ServiceCallback<Models.TestProxyResponse>, callback?: msRest.ServiceCallback<Models.TestProxyResponse>): Promise<Models.TestProxyResponse2> {
+    return this.sendOperationRequest(
+      {
+        options
+      },
+      testProxyOperationSpec,
+      callback) as Promise<Models.TestProxyResponse2>;
+  }
+
+  /**
    * @summary Gets a preview list about profiles that are currently in the system.
    * @param [options] The optional parameters
    * @returns Promise<Models.ListProfilesResponse>
@@ -421,6 +445,39 @@ class LocalApiClient extends LocalApiClientContext {
       },
       startProfileOperationSpec,
       callback) as Promise<Models.StartProfileResponse>;
+  }
+
+  /**
+   * @summary Starts a profile, for desktop profiles additional WebDriver settings can be provided.
+   * The browser will be launched. In case of mobile profiles and external launcher types the
+   * external spoofing engine will be launched.
+   * If successful, the profile's lifetime state will be 'running'. Otherwise the profile's lifetime
+   * state will be 'terminated'. During the api call the lifetime state can be 'starting' for a
+   * temporarily.
+   * @param guid The unique identifier of the profile
+   * @param [options] The optional parameters
+   * @returns Promise<Models.StartProfileWithWebDriverSettingsResponse>
+   */
+  startProfileWithWebDriverSettings(guid: string, options?: Models.LocalApiClientStartProfileWithWebDriverSettingsOptionalParams): Promise<Models.StartProfileWithWebDriverSettingsResponse>;
+  /**
+   * @param guid The unique identifier of the profile
+   * @param callback The callback
+   */
+  startProfileWithWebDriverSettings(guid: string, callback: msRest.ServiceCallback<Models.StatusResponse>): void;
+  /**
+   * @param guid The unique identifier of the profile
+   * @param options The optional parameters
+   * @param callback The callback
+   */
+  startProfileWithWebDriverSettings(guid: string, options: Models.LocalApiClientStartProfileWithWebDriverSettingsOptionalParams, callback: msRest.ServiceCallback<Models.StatusResponse>): void;
+  startProfileWithWebDriverSettings(guid: string, options?: Models.LocalApiClientStartProfileWithWebDriverSettingsOptionalParams | msRest.ServiceCallback<Models.StatusResponse>, callback?: msRest.ServiceCallback<Models.StatusResponse>): Promise<Models.StartProfileWithWebDriverSettingsResponse> {
+    return this.sendOperationRequest(
+      {
+        guid,
+        options
+      },
+      startProfileWithWebDriverSettingsOperationSpec,
+      callback) as Promise<Models.StartProfileWithWebDriverSettingsResponse>;
   }
 
   /**
@@ -692,6 +749,27 @@ const terminateApplicationOperationSpec: msRest.OperationSpec = {
   serializer
 };
 
+const testProxyOperationSpec: msRest.OperationSpec = {
+  httpMethod: "POST",
+  path: "general/test-proxy",
+  requestBody: {
+    parameterPath: [
+      "options",
+      "body"
+    ],
+    mapper: Mappers.TestProxyRequest
+  },
+  responses: {
+    200: {
+      bodyMapper: Mappers.TestProxyResponse
+    },
+    default: {
+      bodyMapper: Mappers.TestProxyResponse
+    }
+  },
+  serializer
+};
+
 const listProfilesOperationSpec: msRest.OperationSpec = {
   httpMethod: "GET",
   path: "profiles",
@@ -817,6 +895,30 @@ const startProfileOperationSpec: msRest.OperationSpec = {
   urlParameters: [
     Parameters.guid
   ],
+  responses: {
+    200: {
+      bodyMapper: Mappers.StatusResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  serializer
+};
+
+const startProfileWithWebDriverSettingsOperationSpec: msRest.OperationSpec = {
+  httpMethod: "POST",
+  path: "profiles/{guid}/start",
+  urlParameters: [
+    Parameters.guid
+  ],
+  requestBody: {
+    parameterPath: [
+      "options",
+      "body"
+    ],
+    mapper: Mappers.WebDriverSettings
+  },
   responses: {
     200: {
       bodyMapper: Mappers.StatusResponse
