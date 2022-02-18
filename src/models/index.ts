@@ -16,9 +16,8 @@ export interface Device {
   type: string;
   /**
    * Name of the device. This is only available for mobile profiles.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly name?: string;
+  name?: string;
 }
 
 /**
@@ -190,21 +189,18 @@ export interface BrowserCookie {
    * long the browser should use the persistent cookie and when the cookie should be deleted.
    * If this attribute is not specified, then the lifetime of the cookie is the same as that of
    * browser session, i.e.it will be a non-persistent cookie.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly expirationDate?: number;
+  expirationDate?: number;
   /**
    * Session cookies are deleted when the current session ends. The browser defines when the
    * "current session" ends, and some browsers use session restoring when restarting, which can
    * cause session cookies to last indefinitely long.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly session?: boolean;
+  session?: boolean;
   /**
    * The ID of the cookie store containing this cookie.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly storeId?: string;
+  storeId?: string;
 }
 
 /**
@@ -443,6 +439,10 @@ export interface CreateProfileRequest {
    */
   canvas: Canvas;
   webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'off', 'noise', 'block'
+   */
+  audio: Audio;
   timezone: TimezoneSpoofingTypeTimezoneMultiLevelChoice;
   geolocation: GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice;
   proxy: ProxyConnectionTypeServerMultiLevelChoice;
@@ -457,7 +457,7 @@ export interface CreateProfileRequest {
   /**
    * Possible values include: 'enabled', 'disabled'
    */
-  passwordManager?: PasswordManager;
+  passwordManager: PasswordManager;
   /**
    * A list of abolute paths from where the profile should load extensions or addons when starting
    * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
@@ -504,10 +504,7 @@ export interface Preference {
  * An interface representing ProblemResponse.
  */
 export interface ProblemResponse {
-  /**
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
-   */
-  readonly code?: number;
+  code?: number;
   error?: { [propertyName: string]: string[] };
 }
 
@@ -583,6 +580,10 @@ export interface ProfileResponse {
    */
   canvas: Canvas1;
   webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'off', 'noise', 'block'
+   */
+  audio: Audio1;
   timezone: TimezoneSpoofingTypeTimezoneMultiLevelChoice;
   geolocation: GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice;
   proxy: ProxyConnectionTypeServerMultiLevelChoice;
@@ -599,9 +600,8 @@ export interface ProfileResponse {
    */
   passwordManager: PasswordManager1;
   /**
-   * A list of abolute paths from where the profile should load extensions or addons when starting
-   * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
-   * addons.
+   * A list of extensions or addons that will be loaded to the profile when the profile is started.
+   * For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons.
    */
   extensions: string[];
   /**
@@ -631,7 +631,11 @@ export interface SaveProfileRequest {
  * An interface representing TestProxyRequest.
  */
 export interface TestProxyRequest {
-  proxy: ProxyConnectionTypeServerMultiLevelChoice;
+  /**
+   * Possible values include: 'none', 'http', 'socks5', 'ssh'
+   */
+  value: Value8;
+  extra: Server;
 }
 
 /**
@@ -657,6 +661,10 @@ export interface UpdateProfileRequest {
    */
   canvas: Canvas2;
   webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'off', 'noise', 'block'
+   */
+  audio: Audio2;
   timezone: TimezoneSpoofingTypeTimezoneMultiLevelChoice;
   geolocation: GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice;
   proxy: ProxyConnectionTypeServerMultiLevelChoice;
@@ -673,9 +681,10 @@ export interface UpdateProfileRequest {
    */
   passwordManager: PasswordManager2;
   /**
-   * A list of abolute paths from where the profile should load extensions or addons when starting
-   * the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format
-   * addons.
+   * A list of extensions or addons should be loaded to the browser when starting the profile. For
+   * extensions that are added now, it should be an absolute path.
+   * For extensions already added to the profile in a previous update, the name is only enough.
+   * For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons.
    */
   extensions?: string[];
   /**
@@ -922,6 +931,14 @@ export type Value7 = 'automatic' | 'manual' | 'off';
 export type Canvas = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for Audio.
+ * Possible values include: 'off', 'noise', 'block'
+ * @readonly
+ * @enum {string}
+ */
+export type Audio = 'off' | 'noise' | 'block';
+
+/**
  * Defines values for PasswordManager.
  * Possible values include: 'enabled', 'disabled'
  * @readonly
@@ -954,6 +971,14 @@ export type LifetimeState = 'created' | 'starting' | 'running' | 'terminating' |
 export type Canvas1 = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for Audio1.
+ * Possible values include: 'off', 'noise', 'block'
+ * @readonly
+ * @enum {string}
+ */
+export type Audio1 = 'off' | 'noise' | 'block';
+
+/**
  * Defines values for PasswordManager1.
  * Possible values include: 'enabled', 'disabled'
  * @readonly
@@ -962,12 +987,28 @@ export type Canvas1 = 'intelligent' | 'noise' | 'block' | 'off';
 export type PasswordManager1 = 'enabled' | 'disabled';
 
 /**
+ * Defines values for Value8.
+ * Possible values include: 'none', 'http', 'socks5', 'ssh'
+ * @readonly
+ * @enum {string}
+ */
+export type Value8 = 'none' | 'http' | 'socks5' | 'ssh';
+
+/**
  * Defines values for Canvas2.
  * Possible values include: 'intelligent', 'noise', 'block', 'off'
  * @readonly
  * @enum {string}
  */
 export type Canvas2 = 'intelligent' | 'noise' | 'block' | 'off';
+
+/**
+ * Defines values for Audio2.
+ * Possible values include: 'off', 'noise', 'block'
+ * @readonly
+ * @enum {string}
+ */
+export type Audio2 = 'off' | 'noise' | 'block';
 
 /**
  * Defines values for PasswordManager2.

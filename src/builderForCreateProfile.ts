@@ -10,7 +10,8 @@ import {
     WebRtcSpoofingOptions,
     Value6,
     Canvas,
-    PasswordManager1
+    PasswordManager1,
+    Audio
 } from './models';
 
 export class BuilderForCreateProfile {
@@ -21,6 +22,10 @@ export class BuilderForCreateProfile {
     }
 
     public static forBaseProfile(baseProfileId: string): BuilderForCreateProfile {
+        if (!baseProfileId) {
+            throw new Error("baseProfileId must be set");
+        }
+
         return new BuilderForCreateProfile(baseProfileId);
     }
 
@@ -52,6 +57,18 @@ export class BuilderForCreateProfile {
     public setWebgl(value: Value, options: WebglSpoofingOptions|undefined): BuilderForCreateProfile {
         this.profileRequest.webgl.value = value;
         this.profileRequest.webgl.extra = options;
+
+        return this;
+    }
+
+    /**
+     * @summary <para>Tells the mode how the canvas will be spoofed. Possible values:</para>
+     * <para>'noise': Add some noise to the Canvas generation.</para>
+     * <para>'block': Completely block the 2D API.</para>
+     * <para>'off': Turn off the spoofing, use the original settings.</para>
+     */
+     public setAudio(value: Audio): BuilderForCreateProfile {
+        this.profileRequest.audio = value;
 
         return this;
     }
@@ -208,6 +225,7 @@ export class BuilderForCreateProfile {
     public setRecommendedDefaults(): BuilderForCreateProfile {
         this.profileRequest.canvas = "noise";
         this.profileRequest.webgl.value = "noise";
+        this.profileRequest.audio = "noise";
         this.profileRequest.timezone.value = "automatic";
         this.profileRequest.geolocation.value = "automatic";
         this.profileRequest.webRtc.value = "automatic";
@@ -227,6 +245,7 @@ export class BuilderForCreateProfile {
                 value: "off",
                 extra: undefined,
             },
+            audio: "off",
             timezone: {
                 value: "off",
                 extra: undefined,

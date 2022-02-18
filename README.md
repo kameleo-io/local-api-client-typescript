@@ -1,22 +1,25 @@
 <img src="docs/kameleo-logo.png" width="150" align="right" />
 
 # Kameleo Local API Client
-[Kameleo](https://kameleo.io) is a complete and integrated solution for browser fingerprinting protection, and also for easy browser automation using W3C WebDriver. This JavaScript/TypeScript package provides convenient access to the [Local API](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/2.3) REST interface of the Kameleo Client.
+With [Kameleo](https://kameleo.io), you can easily create multiple virtual browser profiles to work with multiple accounts. It helps you hide your actual timezone, geolocation, language, IP address and creates natural browser fingerprints to prevent detection by anti-bot systems. Kameleo is compatible with [Selenium](https://www.selenium.dev/), [Playwright](https://playwright.dev/), and [Puppeteer](https://pptr.dev/) frameworks for automating web scraping tasks. This JavaScript/TypeScript package provides convenient access to the [Local API](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/) REST interface of the Kameleo Client. See the [article](https://help.kameleo.io/hc/en-us/articles/4418166326417) in our knowledge base for Getting Started with Kameleo Automation.
 
 
 # Features
-- Protection from Selenium/WebDriver detection
-- Start unlimited number of profiles with different browser fingerprints
+- Stay completely undetected, so websites won't be able to detect that you are using automation tools
+- Start unlimited number of profiles with different natural browser fingerprints
 - Use authenticated HTTP/SOCKS/SSH proxies in browsers
 - Create isolated browsing environments simultaneously
 - Use real browser profiles of Chrome, Firefox, Safari and Edge
 - Edit, Import or Export browser cookies
 - Modify WebRTC parameters
 - Modify Geolocation settings
+- Modify Timezone and Language settings
 - Modify WebGL fingerprint
 - Modify 2D Canvas fingerprint
 - Modify Navigator properties
 - Modify Screen resolution
+
+> Note: _You need [Automation package](https://kameleo.io/learn-more/automation/) of Kameleo to access the features described below._
 
 
 # Quickstart Guide
@@ -30,7 +33,6 @@ npm install @kameleo/local-api-client
 ```
 ./Kameleo.CLI.exe email="your@email.com" password="Pa$$w0rd"
 ```
-> Note: _You need [Automation package](https://kameleo.io/pricing) of Kameleo to access the features described below._
 
 ## 3. Start a browser with out-of-the-box fingerprinting protection 
 ```javascript
@@ -53,81 +55,130 @@ const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/loc
 
     // Start the browser
     await client.startProfile(profile.id);
+
+    // At this point you can automate the browser with your favorite framework
 })();
 ```
 
-# Automate browsers with W3C WebDriver
-Kameleo uses a WebDriver compatible server to control the browser. WebDriver is a W3C specification and industry standard which provides a platform and HTTP protocol to interact with a browser.
+# Automate Kameleo profiles with Selenium
+Kameleo gives you the ability to control any supported browser using Selenium. It uses the WebDriver protocol, a W3C specification, and industry-standard to interact with a browser.
+
+You need to import the official [Selenium library](https://www.npmjs.com/package/selenium-webdriver).
+```javascript
+const { Builder, By } = require('selenium-webdriver');
+```
 
 ```javascript
-const { KameleoLocalApiClient, BuilderForCreateProfile } = require("@kameleo/local-api-client");
-const { Builder, By } = require('selenium-webdriver');
-
-(async () => {
-    const kameleoBaseUrl = "http://localhost:5050";
-
-    const client = new KameleoLocalApiClient({
-        baseUri: kameleoBaseUrl,
-        noRetryPolicy: true,
+// Connect to the running browser instance using WebDriver
+const builder = new Builder()
+    .usingServer(`http://localhost:${kameleoPort}/webdriver`)
+    .withCapabilities({
+        "kameleo:profileId": profile.id,
+        "browserName": "Kameleo",
     });
+const webdriver = await builder.build();
 
-    // Search Chrome Base Profiles
-    const baseProfiles = await client.searchBaseProfiles({
-        deviceType: 'desktop',
-        browserProduct: 'chrome'
-    });
-
-    // Create a new profile with recommended settings
-    // for browser fingerprint protection
-    const requestBody = BuilderForCreateProfile
-        .forBaseProfile(baseProfiles[0].id)
-        .setRecommendedDefaults()
-        .build();
-    
-    const profile = await client.createProfile({ body: requestBody });
-
-    // Start the browser
-    await client.startProfile(profile.id);
-
-    // Connect to the running browser instance using WebDriver
-    const builder = new Builder()
-        .usingServer(`${kameleoBaseUrl}/webdriver`)
-        .withCapabilities({
-            "kameleo:profileId": profile.id,
-            "browserName": "Kameleo",
-        });
-    const webdriver = await builder.build();
-    
-    // Use any WebDriver command to drive the browser
-    // and enjoy full protection from Selenium detection methods
-    await webdriver.get("https://google.com");
-    await webdriver.findElement(By.css('div[aria-modal="true"][tabindex="0"] button:not([aria-label]):last-child')).click();
-    await webdriver.findElement(By.name('q')).sendKeys("Kameleo\n");
-    const title = await webdriver.getTitle();
-    console.log(`The title is ${title}`);
-
-    // Stop the browser by stopping the Kameleo profile
-    await client.stopProfile(profile.id);
-})();
+// Use any WebDriver command to drive the browser
+// and enjoy full protection from bot detection products
+await webdriver.get('https://google.com');
 ```
 
+The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_to_selenium/index.js).
+
+# Automate Kameleo profiles with Puppeteer (Chromium-based)
+Kameleo lets you control Chromium-based browsers (sorry Firefox fans) using the official [Puppeteer library](https://www.npmjs.com/package/puppeteer). In this simple example you can see how to connect to the browser that Kameleo starts.
+
+You need to import the official [Puppeteer library](https://www.npmjs.com/package/puppeteer).
+
+```javascript
+const puppeteer = require("puppeteer");   
+``` 
+
+```javascript
+// Connect to the browser through CDP
+const browserWSEndpoint = `ws://localhost:${kameleoPort}/puppeteer/${profile.id}`;
+const browser = await puppeteer.connect({browserWSEndpoint, defaultViewport: null});
+const page = await browser.newPage();
+
+
+// Use any Puppeteer command to drive the browser
+// and enjoy full protection from bot detection products
+await page.goto('https://google.com');
+```
+
+The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_puppeteer/index.js).
+
+# Automate Kameleo profiles with Playwright
+Kameleo allows you to control the browser with the official [Playwright library](https://www.npmjs.com/package/playwright). It works little bit different with Chromium-based browsers and Firefox, so we provide an example for both. Here we showcase how you can connect to the browser that is already started by Kameleo.
+
+You need to import the official [Playwright library](https://www.npmjs.com/package/playwright).
+
+```javascript
+const playwright = require('playwright');
+```
+
+## Chromium-based profiles with Playwright
+
+```javascript
+// Connect to the browser with Playwright through CDP
+const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
+const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
+const context = browser.contexts()[0]; // It is recommended to work on the default context. New context will work in incognito mode without spoofing.
+const page = await context.newPage();
+
+// Use any Playwright command to drive the browser
+// and enjoy full protection from bot detection products
+await page.goto('https://google.com');
+```
+
+The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_playwright_to_chrome/index.js).
+
+## Firefox-based profiles with Playwright
+
+```javascript
+// Connect to the browser with Playwright
+const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
+const browser = await playwright.firefox.launch({
+    // The Playwright framework is not designed to connect to already running
+    // browsers. To overcome this limitation, a tool bundled with Kameleo, named
+    // pw-bridge.exe will bridge the communication gap between the running Firefox
+    // instance and this playwright script.
+    executablePath: '<PATH_TO_KAMELEO_FOLDER>\\pw-bridge.exe',
+    args: [`-target ${browserWSEndpoint}`],
+});
+
+// Kameleo will open the a new page in the default browser context.
+// NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
+//       with Kameleo's browser fingerprint modification features.
+const page = await browser.newPage();
+
+// Use any Playwright command to drive the browser
+// and enjoy full protection from bot detection products
+await page.goto('https://google.com');
+```
+
+The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_playwright_to_firefox/index.js).
+
 # Example codes
-Several [examples](https://github.com/kameleo-io/local-api-examples) have been prepared in a different repository to showcase the most interesting features. Feel free to create a pull request to add new example codes.
+[Several examples](https://github.com/kameleo-io/local-api-examples) have been prepared in a different repository to showcase the most interesting features. Feel free to create a pull request to add new example codes.
 
 - Finding base profiles
 - Creating profiles with custom options
 - Updating profiles with new settings
 - How to start a profile
-- Using WebDriver with Local API
+- Using Selenium with Local API
+- Using Playwright with Kameleo
+- Using Puppeteer with Kameleo
 - Adding an HTTP, SOCKS or SSH proxy to profile
 - Saving/Loading a browsing session to/from a .kameleo file
 - Modify and Delete browser cookies
-- Hooking up Kameleo with an external browser (Puppeteer)
-- Start profile with extra webDriver capabilities
+- Start profile with extra WebDriver capabilities
+
+> Note: _If you are interested in more information about Kameleo, or have encountered an issue with using it, please check out our [Help Center](https://help.kameleo.io/)._
 
 
 # Endpoints
-Available API endpoints with exhaustive descriptions and example values are documented on this [SwaggerHub](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/2.0) page. This package has built-in [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense) support in Visual Studio Code, no extra package installation needed.
+Available API endpoints with exhaustive descriptions and example values are documented on this [SwaggerHub](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/) page. This package has built-in [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense) support in Visual Studio Code, no extra package installation needed.
 
 
 # License

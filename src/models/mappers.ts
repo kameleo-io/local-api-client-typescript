@@ -20,7 +20,6 @@ export const Device: msRest.CompositeMapper = {
         }
       },
       name: {
-        readOnly: true,
         serializedName: "name",
         type: {
           name: "String"
@@ -347,21 +346,18 @@ export const BrowserCookie: msRest.CompositeMapper = {
         }
       },
       expirationDate: {
-        readOnly: true,
         serializedName: "expirationDate",
         type: {
           name: "Number"
         }
       },
       session: {
-        readOnly: true,
         serializedName: "session",
         type: {
           name: "Boolean"
         }
       },
       storeId: {
-        readOnly: true,
         serializedName: "storeId",
         type: {
           name: "String"
@@ -771,6 +767,13 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
           className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
         }
       },
+      audio: {
+        required: true,
+        serializedName: "audio",
+        type: {
+          name: "String"
+        }
+      },
       timezone: {
         required: true,
         serializedName: "timezone",
@@ -834,6 +837,7 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
         }
       },
       passwordManager: {
+        required: true,
         serializedName: "passwordManager",
         type: {
           name: "String"
@@ -914,7 +918,6 @@ export const ProblemResponse: msRest.CompositeMapper = {
     className: "ProblemResponse",
     modelProperties: {
       code: {
-        readOnly: true,
         serializedName: "code",
         type: {
           name: "Number"
@@ -1088,6 +1091,13 @@ export const ProfileResponse: msRest.CompositeMapper = {
           className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
         }
       },
+      audio: {
+        required: true,
+        serializedName: "audio",
+        type: {
+          name: "String"
+        }
+      },
       timezone: {
         required: true,
         serializedName: "timezone",
@@ -1219,12 +1229,19 @@ export const TestProxyRequest: msRest.CompositeMapper = {
     name: "Composite",
     className: "TestProxyRequest",
     modelProperties: {
-      proxy: {
+      value: {
         required: true,
-        serializedName: "proxy",
+        serializedName: "value",
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        required: true,
+        serializedName: "extra",
         type: {
           name: "Composite",
-          className: "ProxyConnectionTypeServerMultiLevelChoice"
+          className: "Server"
         }
       }
     }
@@ -1274,6 +1291,13 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
         type: {
           name: "Composite",
           className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
+        }
+      },
+      audio: {
+        required: true,
+        serializedName: "audio",
+        type: {
+          name: "String"
         }
       },
       timezone: {
