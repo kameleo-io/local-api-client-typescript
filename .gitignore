@@ -50,3 +50,5 @@ typings/
 ormconfig.json
 dist
 esm
+
+.vscode/
