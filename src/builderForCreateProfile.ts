@@ -223,9 +223,9 @@ export class BuilderForCreateProfile {
      * @summary This sets all the profile options to the defaults recommended by Kameleo Team. Please consider providing Proxy settings to your profile.
      */
     public setRecommendedDefaults(): BuilderForCreateProfile {
-        this.profileRequest.canvas = "noise";
-        this.profileRequest.webgl.value = "noise";
-        this.profileRequest.audio = "noise";
+        this.profileRequest.canvas = "intelligent";
+        this.profileRequest.webgl.value = "off";
+        this.profileRequest.audio = "off";
         this.profileRequest.timezone.value = "automatic";
         this.profileRequest.geolocation.value = "automatic";
         this.profileRequest.webRtc.value = "automatic";

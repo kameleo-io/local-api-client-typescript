@@ -138,13 +138,15 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 ```javascript
 // Connect to the browser with Playwright
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
-const browser = await playwright.firefox.launch({
+const browser = await playwright.firefox.launchPersistentContext('', {
     // The Playwright framework is not designed to connect to already running
     // browsers. To overcome this limitation, a tool bundled with Kameleo, named
     // pw-bridge.exe will bridge the communication gap between the running Firefox
     // instance and this playwright script.
     executablePath: '<PATH_TO_KAMELEO_FOLDER>\\pw-bridge.exe',
     args: [`-target ${browserWSEndpoint}`],
+    persistent: true,
+    viewport: null,
 });
 
 // Kameleo will open the a new page in the default browser context.
