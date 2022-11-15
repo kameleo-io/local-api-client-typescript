@@ -36,6 +36,30 @@ export class BuilderForCreateProfile {
         return result;
     }
 
+
+
+    /**
+     * @summary Sets the name of the profile
+     */
+    public setName(value: string): BuilderForCreateProfile {
+        this.profileRequest.name = value;
+
+        return this;
+    }
+
+
+    /**
+     * @summary <para>Sets the tags of the profile:</para>
+     * <para>'tags': The tags of the profile.</para>
+     */
+    public setTags(tags: string[]): BuilderForCreateProfile {
+        this.profileRequest.tags = tags;
+
+        return this;
+    }
+
+
+
     /**
      * @summary <para>Tells the mode how the canvas will be spoofed. Possible values:</para>
      * <para>'noise': Add some noise to the Canvas generation.</para>
@@ -223,6 +247,7 @@ export class BuilderForCreateProfile {
      * @summary This sets all the profile options to the defaults recommended by Kameleo Team. Please consider providing Proxy settings to your profile.
      */
     public setRecommendedDefaults(): BuilderForCreateProfile {
+        this.profileRequest.name = "";
         this.profileRequest.canvas = "intelligent";
         this.profileRequest.webgl.value = "off";
         this.profileRequest.audio = "off";
