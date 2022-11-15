@@ -513,7 +513,7 @@ class LocalApiClient extends LocalApiClientContext {
   }
 
   /**
-   * @summary Saves a profile to a file. It will create a .kameleo file to the required location. It
+   * @summary Saves a profile to a file. It will create a .kameleo file to the given location. It
    * will store all the profile settings, browsing data, cookies, history, bookmarks, installed
    * extension / addons. Later it can be reloaded.
    * @param guid The unique identifier of the profile
@@ -543,6 +543,36 @@ class LocalApiClient extends LocalApiClientContext {
   }
 
   /**
+   * @summary Creates a duplicate of a loaded profile in memory. The created profile contains all the
+   * profile settings, browsing data, cookies, history, bookmarks and installed extensions. This
+   * operation does not perform any filesystem activity and will not affect your existing profile.
+   * @param guid The unique identifier of the profile
+   * @param [options] The optional parameters
+   * @returns Promise<Models.DuplicateProfileResponse>
+   */
+  duplicateProfile(guid: string, options?: msRest.RequestOptionsBase): Promise<Models.DuplicateProfileResponse>;
+  /**
+   * @param guid The unique identifier of the profile
+   * @param callback The callback
+   */
+  duplicateProfile(guid: string, callback: msRest.ServiceCallback<Models.ProfileResponse>): void;
+  /**
+   * @param guid The unique identifier of the profile
+   * @param options The optional parameters
+   * @param callback The callback
+   */
+  duplicateProfile(guid: string, options: msRest.RequestOptionsBase, callback: msRest.ServiceCallback<Models.ProfileResponse>): void;
+  duplicateProfile(guid: string, options?: msRest.RequestOptionsBase | msRest.ServiceCallback<Models.ProfileResponse>, callback?: msRest.ServiceCallback<Models.ProfileResponse>): Promise<Models.DuplicateProfileResponse> {
+    return this.sendOperationRequest(
+      {
+        guid,
+        options
+      },
+      duplicateProfileOperationSpec,
+      callback) as Promise<Models.DuplicateProfileResponse>;
+  }
+
+  /**
    * @summary Loads a profile from a file. It will load the profile from a .kameleo file. It will
    * load all the profile settings, browsing data, cookies, history, bookmarks, installed extension /
    * addons.
@@ -566,6 +596,36 @@ class LocalApiClient extends LocalApiClientContext {
       },
       loadProfileOperationSpec,
       callback) as Promise<Models.LoadProfileResponse>;
+  }
+
+  /**
+   * @summary Upgrades the profile to the latest available browser version from the server. The exact
+   * target of the upgrade depends on the profile's current device, browser, operating system, and
+   * language settings.
+   * @param guid
+   * @param [options] The optional parameters
+   * @returns Promise<Models.UpgradeProfileResponse>
+   */
+  upgradeProfile(guid: string, options?: msRest.RequestOptionsBase): Promise<Models.UpgradeProfileResponse>;
+  /**
+   * @param guid
+   * @param callback The callback
+   */
+  upgradeProfile(guid: string, callback: msRest.ServiceCallback<Models.ProfileResponse>): void;
+  /**
+   * @param guid
+   * @param options The optional parameters
+   * @param callback The callback
+   */
+  upgradeProfile(guid: string, options: msRest.RequestOptionsBase, callback: msRest.ServiceCallback<Models.ProfileResponse>): void;
+  upgradeProfile(guid: string, options?: msRest.RequestOptionsBase | msRest.ServiceCallback<Models.ProfileResponse>, callback?: msRest.ServiceCallback<Models.ProfileResponse>): Promise<Models.UpgradeProfileResponse> {
+    return this.sendOperationRequest(
+      {
+        guid,
+        options
+      },
+      upgradeProfileOperationSpec,
+      callback) as Promise<Models.UpgradeProfileResponse>;
   }
 }
 
@@ -971,6 +1031,23 @@ const saveProfileOperationSpec: msRest.OperationSpec = {
   serializer
 };
 
+const duplicateProfileOperationSpec: msRest.OperationSpec = {
+  httpMethod: "POST",
+  path: "profiles/{guid}/duplicate",
+  urlParameters: [
+    Parameters.guid
+  ],
+  responses: {
+    200: {
+      bodyMapper: Mappers.ProfileResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  serializer
+};
+
 const loadProfileOperationSpec: msRest.OperationSpec = {
   httpMethod: "POST",
   path: "profiles/load",
@@ -985,6 +1062,25 @@ const loadProfileOperationSpec: msRest.OperationSpec = {
     200: {
       bodyMapper: Mappers.ProfileResponse
     },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  serializer
+};
+
+const upgradeProfileOperationSpec: msRest.OperationSpec = {
+  httpMethod: "POST",
+  path: "profiles/{guid}/upgrade",
+  urlParameters: [
+    Parameters.guid
+  ],
+  responses: {
+    200: {
+      bodyMapper: Mappers.ProfileResponse
+    },
+    204: {},
+    409: {},
     default: {
       bodyMapper: Mappers.ProblemResponse
     }

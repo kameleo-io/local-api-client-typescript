@@ -20,6 +20,7 @@ export const Device: msRest.CompositeMapper = {
         }
       },
       name: {
+        readOnly: true,
         serializedName: "name",
         type: {
           name: "String"
@@ -346,18 +347,21 @@ export const BrowserCookie: msRest.CompositeMapper = {
         }
       },
       expirationDate: {
+        readOnly: true,
         serializedName: "expirationDate",
         type: {
           name: "Number"
         }
       },
       session: {
+        readOnly: true,
         serializedName: "session",
         type: {
           name: "Boolean"
         }
       },
       storeId: {
+        readOnly: true,
         serializedName: "storeId",
         type: {
           name: "String"
@@ -752,6 +756,23 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      name: {
+        serializedName: "name",
+        type: {
+          name: "String"
+        }
+      },
+      tags: {
+        serializedName: "tags",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
       canvas: {
         required: true,
         serializedName: "canvas",
@@ -918,6 +939,7 @@ export const ProblemResponse: msRest.CompositeMapper = {
     className: "ProblemResponse",
     modelProperties: {
       code: {
+        readOnly: true,
         serializedName: "code",
         type: {
           name: "Number"
@@ -984,6 +1006,40 @@ export const ProfilePreview: msRest.CompositeMapper = {
         serializedName: "id",
         type: {
           name: "Uuid"
+        }
+      },
+      name: {
+        required: true,
+        serializedName: "name",
+        type: {
+          name: "String"
+        }
+      },
+      tags: {
+        required: true,
+        serializedName: "tags",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      proxy: {
+        required: true,
+        serializedName: "proxy",
+        type: {
+          name: "Composite",
+          className: "ProxyConnectionTypeServerMultiLevelChoice"
+        }
+      },
+      createdAt: {
+        required: true,
+        serializedName: "createdAt",
+        type: {
+          name: "DateTime"
         }
       },
       lastKnownPath: {
@@ -1053,6 +1109,25 @@ export const ProfileResponse: msRest.CompositeMapper = {
         serializedName: "id",
         type: {
           name: "Uuid"
+        }
+      },
+      name: {
+        required: true,
+        serializedName: "name",
+        type: {
+          name: "String"
+        }
+      },
+      tags: {
+        required: true,
+        serializedName: "tags",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
         }
       },
       lastKnownPath: {
@@ -1387,6 +1462,24 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      name: {
+        required: true,
+        serializedName: "name",
+        type: {
+          name: "String"
+        }
+      },
+      tags: {
+        serializedName: "tags",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
       launcher: {
         serializedName: "launcher",
         type: {
@@ -1417,6 +1510,13 @@ export const UserInfoResponse: msRest.CompositeMapper = {
           name: "String"
         }
       },
+      emailConfirmed: {
+        required: true,
+        serializedName: "emailConfirmed",
+        type: {
+          name: "Boolean"
+        }
+      },
       subscriptionEnd: {
         required: true,
         serializedName: "subscriptionEnd",
@@ -1434,6 +1534,13 @@ export const UserInfoResponse: msRest.CompositeMapper = {
               name: "String"
             }
           }
+        }
+      },
+      gracePeriod: {
+        required: true,
+        serializedName: "gracePeriod",
+        type: {
+          name: "Boolean"
         }
       },
       lastAppLogin: {
