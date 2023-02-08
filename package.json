@@ -2,7 +2,7 @@
   "name": "@kameleo/local-api-client",
   "author": "Kameleo Team",
   "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "dependencies": {
     "@azure/ms-rest-js": "^2.6.0",
     "tslib": "^2.0.3"
