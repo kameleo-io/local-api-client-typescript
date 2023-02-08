@@ -1032,7 +1032,7 @@ const saveProfileOperationSpec: msRest.OperationSpec = {
 };
 
 const duplicateProfileOperationSpec: msRest.OperationSpec = {
-  httpMethod: "POST",
+  httpMethod: "GET",
   path: "profiles/{guid}/duplicate",
   urlParameters: [
     Parameters.guid
@@ -1070,7 +1070,7 @@ const loadProfileOperationSpec: msRest.OperationSpec = {
 };
 
 const upgradeProfileOperationSpec: msRest.OperationSpec = {
-  httpMethod: "POST",
+  httpMethod: "GET",
   path: "profiles/{guid}/upgrade",
   urlParameters: [
     Parameters.guid

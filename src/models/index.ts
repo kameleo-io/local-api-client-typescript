@@ -16,9 +16,8 @@ export interface Device {
   type: string;
   /**
    * Name of the device. This is only available for mobile profiles.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly name?: string;
+  name?: string;
 }
 
 /**
@@ -58,6 +57,20 @@ export interface Browser {
 }
 
 /**
+ * An interface representing WebglMeta.
+ */
+export interface WebglMeta {
+  /**
+   * The UnmaskedVendor field from WebGL context
+   */
+  vendor: string;
+  /**
+   * The UnmaskedRenderer field from WebGL context
+   */
+  renderer?: string;
+}
+
+/**
  * Representation of a base profile which is used to build profiles from.
  */
 export interface BaseProfile {
@@ -90,6 +103,7 @@ export interface BaseProfile {
    * A list of plugins included in the profile
    */
   plugins: string[];
+  webglMeta: WebglMeta;
 }
 
 /**
@@ -190,21 +204,18 @@ export interface BrowserCookie {
    * long the browser should use the persistent cookie and when the cookie should be deleted.
    * If this attribute is not specified, then the lifetime of the cookie is the same as that of
    * browser session, i.e.it will be a non-persistent cookie.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly expirationDate?: number;
+  expirationDate?: number;
   /**
    * Session cookies are deleted when the current session ends. The browser defines when the
    * "current session" ends, and some browsers use session restoring when restarting, which can
    * cause session cookies to last indefinitely long.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly session?: boolean;
+  session?: boolean;
   /**
    * The ID of the cookie store containing this cookie.
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
    */
-  readonly storeId?: string;
+  storeId?: string;
 }
 
 /**
@@ -267,10 +278,10 @@ export interface CookieRequest {
 }
 
 /**
- * When the WebGL spoofing is set to noise these extra settings can be used to ovveride the values
- * in the base profile.
+ * When the WebGL Meta spoofing is used, these settings can override the values in the base
+ * profile.
  */
-export interface WebglSpoofingOptions {
+export interface WebglMetaSpoofingOptions {
   /**
    * Unmasked vendor
    */
@@ -282,14 +293,14 @@ export interface WebglSpoofingOptions {
 }
 
 /**
- * An interface representing WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice.
+ * An interface representing WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice.
  */
-export interface WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice {
+export interface WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice {
   /**
-   * Possible values include: 'noise', 'block', 'off'
+   * Possible values include: 'automatic', 'manual', 'off'
    */
   value: Value;
-  extra?: WebglSpoofingOptions;
+  extra?: WebglMetaSpoofingOptions;
 }
 
 /**
@@ -451,7 +462,11 @@ export interface CreateProfileRequest {
    * Possible values include: 'intelligent', 'noise', 'block', 'off'
    */
   canvas: Canvas;
-  webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'noise', 'block', 'off'
+   */
+  webgl: Webgl;
+  webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
    * Possible values include: 'off', 'noise', 'block'
    */
@@ -517,10 +532,7 @@ export interface Preference {
  * An interface representing ProblemResponse.
  */
 export interface ProblemResponse {
-  /**
-   * **NOTE: This property will not be serialized. It can only be populated by the server.**
-   */
-  readonly code?: number;
+  code?: number;
   error?: { [propertyName: string]: string[] };
 }
 
@@ -617,7 +629,11 @@ export interface ProfileResponse {
    * Possible values include: 'intelligent', 'noise', 'block', 'off'
    */
   canvas: Canvas1;
-  webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'noise', 'block', 'off'
+   */
+  webgl: Webgl1;
+  webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
    * Possible values include: 'off', 'noise', 'block'
    */
@@ -698,7 +714,11 @@ export interface UpdateProfileRequest {
    * Possible values include: 'intelligent', 'noise', 'block', 'off'
    */
   canvas: Canvas2;
-  webgl: WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice;
+  /**
+   * Possible values include: 'noise', 'block', 'off'
+   */
+  webgl: Webgl2;
+  webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
    * Possible values include: 'off', 'noise', 'block'
    */
@@ -920,11 +940,11 @@ export interface LocalApiClientLoadProfileOptionalParams extends msRest.RequestO
 
 /**
  * Defines values for Value.
- * Possible values include: 'noise', 'block', 'off'
+ * Possible values include: 'automatic', 'manual', 'off'
  * @readonly
  * @enum {string}
  */
-export type Value = 'noise' | 'block' | 'off';
+export type Value = 'automatic' | 'manual' | 'off';
 
 /**
  * Defines values for Value1.
@@ -991,6 +1011,14 @@ export type Value7 = 'automatic' | 'manual' | 'off';
 export type Canvas = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for Webgl.
+ * Possible values include: 'noise', 'block', 'off'
+ * @readonly
+ * @enum {string}
+ */
+export type Webgl = 'noise' | 'block' | 'off';
+
+/**
  * Defines values for Audio.
  * Possible values include: 'off', 'noise', 'block'
  * @readonly
@@ -1031,6 +1059,14 @@ export type LifetimeState = 'created' | 'starting' | 'running' | 'terminating' |
 export type Canvas1 = 'intelligent' | 'noise' | 'block' | 'off';
 
 /**
+ * Defines values for Webgl1.
+ * Possible values include: 'noise', 'block', 'off'
+ * @readonly
+ * @enum {string}
+ */
+export type Webgl1 = 'noise' | 'block' | 'off';
+
+/**
  * Defines values for Audio1.
  * Possible values include: 'off', 'noise', 'block'
  * @readonly
@@ -1061,6 +1097,14 @@ export type Value8 = 'none' | 'http' | 'socks5' | 'ssh';
  * @enum {string}
  */
 export type Canvas2 = 'intelligent' | 'noise' | 'block' | 'off';
+
+/**
+ * Defines values for Webgl2.
+ * Possible values include: 'noise', 'block', 'off'
+ * @readonly
+ * @enum {string}
+ */
+export type Webgl2 = 'noise' | 'block' | 'off';
 
 /**
  * Defines values for Audio2.
