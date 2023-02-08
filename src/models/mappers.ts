@@ -20,7 +20,6 @@ export const Device: msRest.CompositeMapper = {
         }
       },
       name: {
-        readOnly: true,
         serializedName: "name",
         type: {
           name: "String"
@@ -84,6 +83,29 @@ export const Browser: msRest.CompositeMapper = {
       version: {
         required: true,
         serializedName: "version",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const WebglMeta: msRest.CompositeMapper = {
+  serializedName: "WebglMeta",
+  type: {
+    name: "Composite",
+    className: "WebglMeta",
+    modelProperties: {
+      vendor: {
+        required: true,
+        serializedName: "vendor",
+        type: {
+          name: "String"
+        }
+      },
+      renderer: {
+        serializedName: "renderer",
         type: {
           name: "String"
         }
@@ -172,6 +194,14 @@ export const BaseProfile: msRest.CompositeMapper = {
               name: "String"
             }
           }
+        }
+      },
+      webglMeta: {
+        required: true,
+        serializedName: "webglMeta",
+        type: {
+          name: "Composite",
+          className: "WebglMeta"
         }
       }
     }
@@ -347,21 +377,18 @@ export const BrowserCookie: msRest.CompositeMapper = {
         }
       },
       expirationDate: {
-        readOnly: true,
         serializedName: "expirationDate",
         type: {
           name: "Number"
         }
       },
       session: {
-        readOnly: true,
         serializedName: "session",
         type: {
           name: "Boolean"
         }
       },
       storeId: {
-        readOnly: true,
         serializedName: "storeId",
         type: {
           name: "String"
@@ -380,6 +407,9 @@ export const CookieRequest: msRest.CompositeMapper = {
       domain: {
         required: true,
         serializedName: "domain",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }
@@ -394,6 +424,9 @@ export const CookieRequest: msRest.CompositeMapper = {
       path: {
         required: true,
         serializedName: "path",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }
@@ -439,11 +472,11 @@ export const CookieRequest: msRest.CompositeMapper = {
   }
 };
 
-export const WebglSpoofingOptions: msRest.CompositeMapper = {
-  serializedName: "WebglSpoofingOptions",
+export const WebglMetaSpoofingOptions: msRest.CompositeMapper = {
+  serializedName: "WebglMetaSpoofingOptions",
   type: {
     name: "Composite",
-    className: "WebglSpoofingOptions",
+    className: "WebglMetaSpoofingOptions",
     modelProperties: {
       vendor: {
         serializedName: "vendor",
@@ -461,11 +494,11 @@ export const WebglSpoofingOptions: msRest.CompositeMapper = {
   }
 };
 
-export const WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice: msRest.CompositeMapper = {
-  serializedName: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice",
+export const WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice: msRest.CompositeMapper = {
+  serializedName: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice",
   type: {
     name: "Composite",
-    className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice",
+    className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice",
     modelProperties: {
       value: {
         required: true,
@@ -478,7 +511,7 @@ export const WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice: msRest.Compo
         serializedName: "extra",
         type: {
           name: "Composite",
-          className: "WebglSpoofingOptions"
+          className: "WebglMetaSpoofingOptions"
         }
       }
     }
@@ -752,6 +785,9 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
       baseProfileId: {
         required: true,
         serializedName: "baseProfileId",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }
@@ -784,8 +820,15 @@ export const CreateProfileRequest: msRest.CompositeMapper = {
         required: true,
         serializedName: "webgl",
         type: {
+          name: "String"
+        }
+      },
+      webglMeta: {
+        required: true,
+        serializedName: "webglMeta",
+        type: {
           name: "Composite",
-          className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
+          className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice"
         }
       },
       audio: {
@@ -900,6 +943,9 @@ export const LoadProfileRequest: msRest.CompositeMapper = {
       path: {
         required: true,
         serializedName: "path",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }
@@ -939,7 +985,6 @@ export const ProblemResponse: msRest.CompositeMapper = {
     className: "ProblemResponse",
     modelProperties: {
       code: {
-        readOnly: true,
         serializedName: "code",
         type: {
           name: "Number"
@@ -1162,8 +1207,15 @@ export const ProfileResponse: msRest.CompositeMapper = {
         required: true,
         serializedName: "webgl",
         type: {
+          name: "String"
+        }
+      },
+      webglMeta: {
+        required: true,
+        serializedName: "webglMeta",
+        type: {
           name: "Composite",
-          className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
+          className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice"
         }
       },
       audio: {
@@ -1290,6 +1342,9 @@ export const SaveProfileRequest: msRest.CompositeMapper = {
       path: {
         required: true,
         serializedName: "path",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }
@@ -1364,8 +1419,15 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
         required: true,
         serializedName: "webgl",
         type: {
+          name: "String"
+        }
+      },
+      webglMeta: {
+        required: true,
+        serializedName: "webglMeta",
+        type: {
           name: "Composite",
-          className: "WebglSpoofingTypeWebglSpoofingOptionsMultiLevelChoice"
+          className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice"
         }
       },
       audio: {
@@ -1465,6 +1527,9 @@ export const UpdateProfileRequest: msRest.CompositeMapper = {
       name: {
         required: true,
         serializedName: "name",
+        constraints: {
+          MinLength: 1
+        },
         type: {
           name: "String"
         }

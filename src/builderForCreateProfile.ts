@@ -1,7 +1,7 @@
 import {
     CreateProfileRequest,
     Value,
-    WebglSpoofingOptions,
+    WebglMetaSpoofingOptions,
     Value1,
     Value2,
     Value3,
@@ -11,7 +11,7 @@ import {
     Value6,
     Canvas,
     PasswordManager1,
-    Audio
+    Audio, Webgl, WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice
 } from './models';
 
 export class BuilderForCreateProfile {
@@ -78,9 +78,24 @@ export class BuilderForCreateProfile {
      * <para>'block': Completely block the 3D API</para>
      * <para>'off': Turn off the spoofing, use the original settings</para>
      */
-    public setWebgl(value: Value, options: WebglSpoofingOptions|undefined): BuilderForCreateProfile {
-        this.profileRequest.webgl.value = value;
-        this.profileRequest.webgl.extra = options;
+    public setWebgl(value: Webgl): BuilderForCreateProfile {
+        this.profileRequest.webgl = value;
+
+        return this;
+    }
+
+    /// <summary>
+    /// <para>Tells the mode how the WebGL vendor and renderer will be spoofed. Possible values:</para>
+    /// <para>'automatic': The vendor and renderer values comes from the base profile.</para>
+    /// <para>'manual': Manually set the vendor and renderer values.</para>
+    /// <para>'off': Turn off the spoofing, use the original settings.</para>
+    /// </summary>
+    /// <param name="value">Values can be: 'automatic', 'manual', 'off'</param>
+    /// <param name="options">When the WebglMeta spoofing is set to manual the webgl gpu vendor and renderer is required. For example:
+    /// Google Inc. (NVIDIA)/ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)</param>
+    public setWebglMeta(value: Value, options: WebglMetaSpoofingOptions|undefined): BuilderForCreateProfile {
+        this.profileRequest.webglMeta.value = value;
+        this.profileRequest.webglMeta.extra = options;
 
         return this;
     }
@@ -249,7 +264,8 @@ export class BuilderForCreateProfile {
     public setRecommendedDefaults(): BuilderForCreateProfile {
         this.profileRequest.name = "";
         this.profileRequest.canvas = "intelligent";
-        this.profileRequest.webgl.value = "off";
+        this.profileRequest.webgl = "off";
+        this.profileRequest.webglMeta.value = "automatic";
         this.profileRequest.audio = "off";
         this.profileRequest.timezone.value = "automatic";
         this.profileRequest.geolocation.value = "automatic";
@@ -266,7 +282,8 @@ export class BuilderForCreateProfile {
         return {
             baseProfileId: baseProfileId,
             canvas: "off",
-            webgl: {
+            webgl: "off",
+            webglMeta: {
                 value: "off",
                 extra: undefined,
             },
