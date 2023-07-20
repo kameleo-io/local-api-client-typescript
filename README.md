@@ -34,7 +34,7 @@ npm install @kameleo/local-api-client
 ./Kameleo.CLI.exe email="your@email.com" password="Pa$$w0rd"
 ```
 
-## 3. Start a browser with out-of-the-box fingerprinting protection 
+## 3. Start a browser with out-of-the-box fingerprinting protection
 ```javascript
 const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/local-api-client');
 
@@ -42,7 +42,7 @@ const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/loc
     const client = new KameleoLocalApiClient();
     const baseProfiles = await client.searchBaseProfiles({
         deviceType: 'desktop',
-        browserProduct: 'chrome'
+        browserProduct: 'chrome',
     });
 
     // Create a new profile with recommended settings
@@ -51,7 +51,9 @@ const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/loc
         .forBaseProfile(baseProfiles[0].id)
         .setRecommendedDefaults()
         .build();
-    const profile = await client.createProfile({ body: requestBody });
+    const profile = await client.createProfile({
+        body: requestBody,
+    });
 
     // Start the browser
     await client.startProfile(profile.id);
@@ -65,16 +67,17 @@ Kameleo gives you the ability to control any supported browser using Selenium. I
 
 You need to import the official [Selenium library](https://www.npmjs.com/package/selenium-webdriver).
 ```javascript
-const { Builder, By } = require('selenium-webdriver');
+const { Builder } = require('selenium-webdriver');
 ```
 
 ```javascript
 // Connect to the running browser instance using WebDriver
+const kameleoPort = 5050;
 const builder = new Builder()
     .usingServer(`http://localhost:${kameleoPort}/webdriver`)
     .withCapabilities({
-        "kameleo:profileId": profile.id,
-        "browserName": "Kameleo",
+        'kameleo:profileId': profile.id,
+        browserName: 'Kameleo',
     });
 const webdriver = await builder.build();
 
@@ -91,15 +94,17 @@ Kameleo lets you control Chromium-based browsers (sorry Firefox fans) using the 
 You need to import the official [Puppeteer library](https://www.npmjs.com/package/puppeteer).
 
 ```javascript
-const puppeteer = require("puppeteer");   
-``` 
+const puppeteer = require('puppeteer');
+```
 
 ```javascript
 // Connect to the browser through CDP
+const kameleoPort = 5050;
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/puppeteer/${profile.id}`;
-const browser = await puppeteer.connect({browserWSEndpoint, defaultViewport: null});
+const browser = await puppeteer.connect({
+    browserWSEndpoint, defaultViewport: null,
+});
 const page = await browser.newPage();
-
 
 // Use any Puppeteer command to drive the browser
 // and enjoy full protection from bot detection products
@@ -121,6 +126,7 @@ const playwright = require('playwright');
 
 ```javascript
 // Connect to the browser with Playwright through CDP
+const kameleoPort = 5050;
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
 const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
 const context = browser.contexts()[0]; // It is recommended to work on the default context. New context will work in incognito mode without spoofing.
@@ -137,13 +143,17 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 
 ```javascript
 // Connect to the browser with Playwright
+const kameleoPort = 5050;
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
+// The exact path to the bridge executable is subject to change. Here, we use %LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe
+const localAppDataPath = process.env.LOCALAPPDATA;
+const executablePathExample = `${localAppDataPath}\\Programs\\Kameleo\\pw-bridge.exe`;
 const browser = await playwright.firefox.launchPersistentContext('', {
     // The Playwright framework is not designed to connect to already running
     // browsers. To overcome this limitation, a tool bundled with Kameleo, named
     // pw-bridge.exe will bridge the communication gap between the running Firefox
     // instance and this playwright script.
-    executablePath: '<PATH_TO_KAMELEO_FOLDER>\\pw-bridge.exe',
+    executablePath: executablePathExample,
     args: [`-target ${browserWSEndpoint}`],
     persistent: true,
     viewport: null,
@@ -181,10 +191,12 @@ const createProfileRequest = BuilderForCreateProfile
 	.setRecommendedDefaults()
 	.setLauncher('chromium')
 	.build();
-const profile = await client.createProfile({ body: createProfileRequest });
+const profile = await client.createProfile({
+    body: createProfileRequest,
+});
 
 // Start the profile
-await client.startProfileWithWebDriverSettings(profile.id, {
+await client.startProfileWithOptions(profile.id, {
 	body: {
 		// This allows you to click on elements using the cursor when emulating a touch screen in the brower.
 		// If you leave this out, your script may time out after clicks and fail.
@@ -217,7 +229,6 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 - Modify and Delete browser cookies
 - Start profile with extra WebDriver capabilities
 - How to duplicate virtual browser profiles
-- Test proxies
 - Refresh the browser of the emulated profiles
 
 > Note: _If you are interested in more information about Kameleo, or have encountered an issue with using it, please check out our [Help Center](https://help.kameleo.io/)._
@@ -226,6 +237,8 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 # Endpoints
 Available API endpoints with exhaustive descriptions and example values are documented on this [SwaggerHub](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/) page. This package has built-in [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense) support in Visual Studio Code, no extra package installation needed.
 
+# Package
+This package can be found on npm here: [@kameleo/local-api-client](https://www.npmjs.com/package/@kameleo/local-api-client?activeTab=readme).
 
 # License
 This project is released under MIT License. Please refer the LICENSE.txt for more details.
