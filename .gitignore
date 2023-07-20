@@ -48,8 +48,11 @@ typings/
 # Project
 .env
 ormconfig.json
-dist
-esm
+dist/
+dist-esm/
+dist-test/
+temp/
+review/
 
 .vscode/
 .idea/
