@@ -122,6 +122,8 @@ You need to import the official [Playwright library](https://www.npmjs.com/packa
 const playwright = require('playwright');
 ```
 
+You can find more details here: [Using Kameleo with Playwright framework – Kameleo Support Center](https://help.kameleo.io/hc/en-us/articles/4419471627793-Using-Kameleo-with-Playwright-framework).
+
 ## Chromium-based profiles with Playwright
 
 ```javascript

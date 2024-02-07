@@ -148,7 +148,7 @@ export interface ProfilePreview {
   browser: Browser;
   /** Language of the profile. This is derived from the base profile. Using ISO 639-1 language codes. */
   language: string;
-  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile proiles: 'chromium', 'external'. */
+  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher: string;
   /** Status information about the profile */
   status: StatusResponse;
@@ -188,12 +188,14 @@ export interface StatusResponse {
    */
   persistenceState: ProfilePersistenceState;
   /**
-   * Tells the lifetime state of the profile. This is important, because several actions can only be performed in a specific state. Possible values:
-   * 'created': Profile is created but never started.
-   * 'starting': Profile is starting the browser.
-   * 'running': Profile is running the browser.
-   * 'terminating': Profile is terminating the browser.
-   * 'terminated': Profile is not running, but it has been run at least once.
+   * Represents the lifetime states of a profile, indicating which actions
+   * can be performed with the associated browser engine at each state. Possible values are:
+   * - Unknown: State of the profile is undefined.
+   * - Created: Profile is created; the associated browser engine is not started.
+   * - Starting: The associated browser engine is starting.
+   * - Running: The associated browser engine is currently running.
+   * - Terminating: The associated browser engine is in the process of terminating.
+   * - Terminated: The associated browser engine is not running but has been started at least once.
    */
   lifetimeState: ProfileLifetimeState;
   /** In case of running profiles which use an external browser this shows the connection port (for mobile profiles as well). */
@@ -236,6 +238,7 @@ export interface CreateProfileRequest {
   webRtc: WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice;
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
+  hardwareConcurrency?: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
   startPage?: string;
   /**
@@ -248,7 +251,7 @@ export interface CreateProfileRequest {
   extensions?: string[];
   /** A free text including any notes written by the user. */
   notes?: string;
-  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile proiles: 'chromium', 'external'. */
+  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher?: string;
 }
 
@@ -348,6 +351,17 @@ export interface ScreenSpoofingTypeScreenSizeMultiLevelChoice {
   extra?: string;
 }
 
+export interface HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice {
+  /**
+   * Tells the mode how the HardwareConcurrency will be spoofed. Possible values:
+   * 'automatic': Automatically set the values based on the Base Profile.
+   * 'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  value: HardwareConcurrencySpoofingType;
+  extra?: number;
+}
+
 export interface ProfileResponse {
   /** A unique identifier of the profile */
   id: string;
@@ -388,6 +402,7 @@ export interface ProfileResponse {
   webRtc: WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice;
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
+  hardwareConcurrency: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
   startPage: string;
   /**
@@ -400,7 +415,7 @@ export interface ProfileResponse {
   extensions: string[];
   /** A free text including any notes written by the user. */
   notes: string;
-  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile proiles: 'chromium', 'external'. */
+  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher: string;
   /** Status information about the profile */
   status: StatusResponse;
@@ -461,8 +476,9 @@ export interface UpdateProfileRequest {
   webRtc: WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice;
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
+  hardwareConcurrency: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
-  startPage: string;
+  startPage?: string;
   /**
    * Tells if the browser should support credential saving. Possible values are:
    * 'enabled': Credential saving is enabled.
@@ -481,7 +497,7 @@ export interface UpdateProfileRequest {
   name: string;
   /** Profile tags */
   tags?: string[];
-  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile proiles: 'chromium', 'external'. */
+  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher?: string;
 }
 
@@ -568,7 +584,9 @@ export enum KnownProfileLifetimeState {
   /** Terminating */
   Terminating = "terminating",
   /** Terminated */
-  Terminated = "terminated"
+  Terminated = "terminated",
+  /** Unknown */
+  Unknown = "unknown"
 }
 
 /**
@@ -580,7 +598,8 @@ export enum KnownProfileLifetimeState {
  * **starting** \
  * **running** \
  * **terminating** \
- * **terminated**
+ * **terminated** \
+ * **unknown**
  */
 export type ProfileLifetimeState = string;
 
@@ -778,6 +797,27 @@ export enum KnownScreenSpoofingType {
  * **off**
  */
 export type ScreenSpoofingType = string;
+
+/** Known values of {@link HardwareConcurrencySpoofingType} that the service accepts. */
+export enum KnownHardwareConcurrencySpoofingType {
+  /** Automatic */
+  Automatic = "automatic",
+  /** Manual */
+  Manual = "manual",
+  /** Off */
+  Off = "off"
+}
+
+/**
+ * Defines values for HardwareConcurrencySpoofingType. \
+ * {@link KnownHardwareConcurrencySpoofingType} can be used interchangeably with HardwareConcurrencySpoofingType,
+ *  this enum contains the known values that the service supports.
+ * ### Known values supported by the service
+ * **automatic** \
+ * **manual** \
+ * **off**
+ */
+export type HardwareConcurrencySpoofingType = string;
 
 /** Known values of {@link PasswordManagerType} that the service accepts. */
 export enum KnownPasswordManagerType {
