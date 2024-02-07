@@ -713,6 +713,14 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
           className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice"
         }
       },
+      hardwareConcurrency: {
+        serializedName: "hardwareConcurrency",
+        type: {
+          name: "Composite",
+          className:
+            "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
+        }
+      },
       startPage: {
         serializedName: "startPage",
         type: {
@@ -961,6 +969,28 @@ export const ScreenSpoofingTypeScreenSizeMultiLevelChoice: coreClient.CompositeM
   }
 };
 
+export const HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
 export const ProfileResponse: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
@@ -1076,6 +1106,14 @@ export const ProfileResponse: coreClient.CompositeMapper = {
         type: {
           name: "Composite",
           className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice"
+        }
+      },
+      hardwareConcurrency: {
+        serializedName: "hardwareConcurrency",
+        type: {
+          name: "Composite",
+          className:
+            "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
         }
       },
       startPage: {
@@ -1305,9 +1343,16 @@ export const UpdateProfileRequest: coreClient.CompositeMapper = {
           className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice"
         }
       },
+      hardwareConcurrency: {
+        serializedName: "hardwareConcurrency",
+        type: {
+          name: "Composite",
+          className:
+            "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
+        }
+      },
       startPage: {
         serializedName: "startPage",
-        required: true,
         type: {
           name: "String"
         }

@@ -14,7 +14,8 @@ import {
     CanvasSpoofingType,
     PasswordManagerType,
     AudioSpoofingType,
-    WebglSpoofingType
+    WebglSpoofingType,
+    HardwareConcurrencySpoofingType
 } from './models';
 
 export class BuilderForCreateProfile {
@@ -209,6 +210,17 @@ export class BuilderForCreateProfile {
     }
 
     /**
+     * @summary <para>Tells the mode how the HardwareConcurrency will be spoofed. Possible values:</para>
+     * <para>'automatic': Automatically override the HardwareConcurrency based on the Base Profile.</para>
+     * <para>'manual': Manually override the HardwareConcurrency. Valid values: 1,2,4,8,16.</para>
+     * <para>'off': Turn off the spoofing, use the original settings.</para>
+     */
+    public setHardwareConcurrency(value: HardwareConcurrencySpoofingType, options: number|undefined): BuilderForCreateProfile {
+        this.profileRequest.hardwareConcurrency = { value: value, extra: options };
+        return this;
+    }
+
+    /**
      * @summary A list of abolute paths from where the profile should load extensions or addons when starting the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons.
      */
     public setExtensions(absolutePaths: string[]): BuilderForCreateProfile {
@@ -251,6 +263,7 @@ export class BuilderForCreateProfile {
         this.profileRequest.webRtc.value = "automatic";
         this.profileRequest.fonts.value = "enabled";
         this.profileRequest.screen.value = "automatic";
+        this.profileRequest.hardwareConcurrency = { value: "automatic", extra: undefined };
         this.profileRequest.launcher = "automatic";
 
         return this;
@@ -287,6 +300,10 @@ export class BuilderForCreateProfile {
                 extra: undefined,
             },
             screen: {
+                value: "off",
+                extra: undefined,
+            },
+            hardwareConcurrency: {
                 value: "off",
                 extra: undefined,
             },
