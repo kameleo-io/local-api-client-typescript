@@ -417,14 +417,53 @@ export const UserInfoResponse: coreClient.CompositeMapper = {
       },
       lastAppLogin: {
         serializedName: "lastAppLogin",
+        required: true,
         type: {
           name: "DateTime"
         }
       },
       workspaceFolder: {
         serializedName: "workspaceFolder",
+        required: true,
         type: {
           name: "String"
+        }
+      },
+      localStorage: {
+        serializedName: "localStorage",
+        type: {
+          name: "Composite",
+          className: "QuotaStatistics"
+        }
+      },
+      cloudStorage: {
+        serializedName: "cloudStorage",
+        type: {
+          name: "Composite",
+          className: "QuotaStatistics"
+        }
+      }
+    }
+  }
+};
+
+export const QuotaStatistics: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "QuotaStatistics",
+    modelProperties: {
+      currentUsage: {
+        serializedName: "currentUsage",
+        required: true,
+        type: {
+          name: "Number"
+        }
+      },
+      maximumLimit: {
+        serializedName: "maximumLimit",
+        required: true,
+        type: {
+          name: "Number"
         }
       }
     }
@@ -516,6 +555,12 @@ export const ProfilePreview: coreClient.CompositeMapper = {
         type: {
           name: "Composite",
           className: "StatusResponse"
+        }
+      },
+      storage: {
+        serializedName: "storage",
+        type: {
+          name: "String"
         }
       }
     }
@@ -721,6 +766,13 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
             "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
         }
       },
+      deviceMemory: {
+        serializedName: "deviceMemory",
+        type: {
+          name: "Composite",
+          className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice"
+        }
+      },
       startPage: {
         serializedName: "startPage",
         type: {
@@ -747,6 +799,12 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
       },
       notes: {
         serializedName: "notes",
+        type: {
+          name: "String"
+        }
+      },
+      storage: {
+        serializedName: "storage",
         type: {
           name: "String"
         }
@@ -991,6 +1049,28 @@ export const HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice: coreC
   }
 };
 
+export const DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
 export const ProfileResponse: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
@@ -1116,6 +1196,13 @@ export const ProfileResponse: coreClient.CompositeMapper = {
             "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
         }
       },
+      deviceMemory: {
+        serializedName: "deviceMemory",
+        type: {
+          name: "Composite",
+          className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice"
+        }
+      },
       startPage: {
         serializedName: "startPage",
         required: true,
@@ -1161,6 +1248,12 @@ export const ProfileResponse: coreClient.CompositeMapper = {
         type: {
           name: "Composite",
           className: "StatusResponse"
+        }
+      },
+      storage: {
+        serializedName: "storage",
+        type: {
+          name: "String"
         }
       }
     }
@@ -1351,6 +1444,13 @@ export const UpdateProfileRequest: coreClient.CompositeMapper = {
             "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
         }
       },
+      deviceMemory: {
+        serializedName: "deviceMemory",
+        type: {
+          name: "Composite",
+          className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice"
+        }
+      },
       startPage: {
         serializedName: "startPage",
         type: {
@@ -1400,6 +1500,12 @@ export const UpdateProfileRequest: coreClient.CompositeMapper = {
               name: "String"
             }
           }
+        }
+      },
+      storage: {
+        serializedName: "storage",
+        type: {
+          name: "String"
         }
       },
       launcher: {

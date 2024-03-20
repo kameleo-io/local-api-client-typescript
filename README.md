@@ -187,7 +187,7 @@ const baseProfileList = await client.searchBaseProfiles({
 
 // Create a new profile with recommended settings
 // Choose one of the Base Profiles
-// Set the launcher to 'chromium' so the mobile profile will be started in Chromium by Kameleo
+// Set the launcher to 'chromium' so the mobile profile will be started in Chroma browser
 const createProfileRequest = BuilderForCreateProfile
 	.forBaseProfile(baseProfileList[0].id)
 	.setRecommendedDefaults()
