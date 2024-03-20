@@ -37,11 +37,11 @@ export interface Device {
 }
 
 export interface Os {
-  /** Family of the OS. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'. */
+  /** Specifies the operating system family. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'. */
   family: string;
-  /** Version of the OS. For example it helps you determine the exact version of the macOS. */
+  /** The specific version of the OS. For example it helps you determine the exact version of the macOS. */
   version: string;
-  /** Platform of the OS. Tells if it runs on 64 bit or 32 bit or some other processor platform. */
+  /** The OS's platform, indicating the processor architecture (e.g., 64-bit, 32-bit) */
   platform: string;
 }
 
@@ -127,9 +127,18 @@ export interface UserInfoResponse {
   /** A boolean value indicates whether the subscription is in a grace period and should be renewed immediately. */
   gracePeriod: boolean;
   /** The last date when the user authenticated by the app. */
-  lastAppLogin?: Date;
+  lastAppLogin: Date;
   /** The user's workspace folder path where the profiles are stored. */
-  workspaceFolder?: string;
+  workspaceFolder: string;
+  localStorage: QuotaStatistics;
+  cloudStorage: QuotaStatistics;
+}
+
+export interface QuotaStatistics {
+  /** Indicates the current count of profiles accessible to the user, always a non-negative value. */
+  currentUsage: number;
+  /** Indicates the maximum permitted profile count for the user, with null implying no limit. */
+  maximumLimit: number;
 }
 
 /** A preview about the profile with some of its properties. */
@@ -152,6 +161,7 @@ export interface ProfilePreview {
   launcher: string;
   /** Status information about the profile */
   status: StatusResponse;
+  storage?: ProfileStorageLocation;
 }
 
 export interface ProxyConnectionTypeServerMultiLevelChoice {
@@ -182,9 +192,10 @@ export interface Server {
 /** Status information about the profile */
 export interface StatusResponse {
   /**
-   * Tells if the profile is saved or not. Possible values:
-   * 'unsaved': Profile is not saved
-   * 'saved': Profile is saved and up-to-date
+   * Indicates the current save state of a profile, including cloud sync status. Possible values:
+   * 'unsaved': The profile is not saved
+   * 'saved': The profile is saved and current
+   * 'syncing': The profile is currently synchronizing with the cloud
    */
   persistenceState: ProfilePersistenceState;
   /**
@@ -210,15 +221,15 @@ export interface CreateProfileRequest {
   /** Use tags to categorize profiles by labeling them accordingly. */
   tags?: string[];
   /**
-   * Tells the mode how the canvas will be spoofed. Possible values:
-   * 'intelligent': Use some noise and in specific cases use the intelligent canvas spoofing. This will result non unique canvas fingerprints.
-   * 'noise': Add some noise to the Canvas generation.
+   * Specifies how the canvas will be spoofed. Possible values:
+   * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+   * 'noise': Add some noise to canvas generation.
    * 'block': Completely block the 2D API.
    * 'off': Turn off the spoofing, use the original settings.
    */
   canvas: CanvasSpoofingType;
   /**
-   * Tells the mode how the WebGL will be spoofed. Possible values:
+   * Specifies how the WebGL will be spoofed. Possible values:
    * 'noise': Add some noise to the WebGL generation
    * 'block': Completely block the 3D API
    * 'off': Turn off the spoofing, use the original settings
@@ -226,7 +237,7 @@ export interface CreateProfileRequest {
   webgl: WebglSpoofingType;
   webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
-   * Tells the mode how the Audio will be spoofed. Possible values:
+   * Specifies how the audio will be spoofed. Possible values:
    * 'noise': Add some noise to the Audio generation
    * 'block': Completely block the Audio API
    * 'off': Turn off the spoofing, use the original settings
@@ -239,25 +250,27 @@ export interface CreateProfileRequest {
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
   hardwareConcurrency?: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
+  deviceMemory?: DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
   startPage?: string;
   /**
-   * Tells if the browser should support credential saving. Possible values are:
-   * 'enabled': Credential saving is enabled.
-   * 'disabled': Credential saving is disabled.
+   * Defines whether the browser can save login credentials. Possible values are:
+   * 'enabled': Credential saving is allowed.
+   * 'disabled': Credential saving is blocked.
    */
   passwordManager: PasswordManagerType;
   /** A list of abolute paths from where the profile should load extensions or addons when starting the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons. */
   extensions?: string[];
   /** A free text including any notes written by the user. */
   notes?: string;
+  storage?: ProfileStorageLocation;
   /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher?: string;
 }
 
 export interface WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice {
   /**
-   * Tells the mode how the WebGL vendor and renderer will be spoofed. Possible values:
+   * Specifies how the WebGL vendor and renderer will be spoofed. Possible values:
    * 'automatic': The vendor and renderer values comes from the base profile.
    * 'manual': Manually set the vendor and renderer values.
    * 'off': Turn off the spoofing, use the original settings
@@ -277,7 +290,7 @@ export interface WebglMetaSpoofingOptions {
 
 export interface TimezoneSpoofingTypeTimezoneMultiLevelChoice {
   /**
-   * Tells the mode how the Timezone will be spoofed. Possble values:
+   * Specifies how the timezone will be spoofed. Possble values:
    * 'automatic': Timezone is automatically set by the IP
    * 'manual': Timezone is manually overridden in the profile
    * 'off': Turn off the spoofing, use the original settings
@@ -289,10 +302,10 @@ export interface TimezoneSpoofingTypeTimezoneMultiLevelChoice {
 
 export interface GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice {
   /**
-   * Tells the mode how the Geolocation will be spoofed. Possible values:
+   * Specifies how the geolocation will be spoofed. Possible values:
    * 'automatic': Automatically set the values based on the IP address
    * 'manual': Manually set the longitude and latitude in the profile
-   * 'block': Completely block the GeolocationAPI
+   * 'block': Completely block the Geolocation API
    * 'off': Turn off the spoofing, use the original settings
    */
   value: GeolocationSpoofingType;
@@ -310,7 +323,7 @@ export interface GeolocationSpoofingOptions {
 
 export interface WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice {
   /**
-   * Tells the mode how the WebRTC will be spoofed. Possible values:
+   * Specifies how the WebRTC will be spoofed. Possible values:
    * 'automatic': Automatically set the webRTC public IP by the IP, and generates a random private IP like '2d2f78e7-1b1e-4345-a21b-07c904c98394.local'
    * 'manual': Manually override the webRTC public IP and private IP in the profile
    * 'block': Block the WebRTC functionality
@@ -331,7 +344,7 @@ export interface WebRtcSpoofingOptions {
 
 export interface FontSpoofingTypeFontIListMultiLevelChoice {
   /**
-   * Tells the mode how the Fonts will be spoofed. Possible values:
+   * Specifies how the fonts will be spoofed. Possible values:
    * 'enabled': Enable fonts spoofing. A list can be provided to override the fonts coming from the base profile.
    * 'disable': Disable fonts spoofing.
    */
@@ -341,7 +354,7 @@ export interface FontSpoofingTypeFontIListMultiLevelChoice {
 
 export interface ScreenSpoofingTypeScreenSizeMultiLevelChoice {
   /**
-   * Tells the mode how the screen will be spoofed. Possible values:
+   * Specifies how the screen will be spoofed. Possible values:
    * 'automatic': Automatically override the screen resolution based on the Base Profile.
    * 'manual': Manually override the screen resolution.
    * 'off': Turn off the spoofing, use the original settings.
@@ -353,12 +366,23 @@ export interface ScreenSpoofingTypeScreenSizeMultiLevelChoice {
 
 export interface HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice {
   /**
-   * Tells the mode how the HardwareConcurrency will be spoofed. Possible values:
+   * Specifies how the hardwareConcurrency will be spoofed. Possible values:
    * 'automatic': Automatically set the values based on the Base Profile.
    * 'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.
    * 'off': Turn off the spoofing, use the original settings.
    */
   value: HardwareConcurrencySpoofingType;
+  extra?: number;
+}
+
+export interface DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice {
+  /**
+   * Specifies how the deviceMemory will be spoofed. Possible values:
+   * 'automatic': Automatically set the values based on the Base Profile.
+   * 'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  value: DeviceMemorySpoofingType;
   extra?: number;
 }
 
@@ -374,15 +398,15 @@ export interface ProfileResponse {
   /** Representation of a base profile which is used to build profiles from. */
   baseProfile: BaseProfile;
   /**
-   * Tells the mode how the canvas will be spoofed. Possible values:
-   * 'intelligent': Use some noise and in specific cases use the intelligent canvas spoofing. This will result non unique canvas fingerprints.
-   * 'noise': Add some noise to the Canvas generation.
+   * Specifies how the canvas will be spoofed. Possible values:
+   * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+   * 'noise': Add some noise to canvas generation.
    * 'block': Completely block the 2D API.
    * 'off': Turn off the spoofing, use the original settings.
    */
   canvas: CanvasSpoofingType;
   /**
-   * Tells the mode how the WebGL will be spoofed. Possible values:
+   * Specifies how the WebGL will be spoofed. Possible values:
    * 'noise': Add some noise to the WebGL generation
    * 'block': Completely block the 3D API
    * 'off': Turn off the spoofing, use the original settings
@@ -390,7 +414,7 @@ export interface ProfileResponse {
   webgl: WebglSpoofingType;
   webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
-   * Tells the mode how the Audio will be spoofed. Possible values:
+   * Specifies how the audio will be spoofed. Possible values:
    * 'noise': Add some noise to the Audio generation
    * 'block': Completely block the Audio API
    * 'off': Turn off the spoofing, use the original settings
@@ -403,12 +427,13 @@ export interface ProfileResponse {
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
   hardwareConcurrency: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
+  deviceMemory: DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
   startPage: string;
   /**
-   * Tells if the browser should support credential saving. Possible values are:
-   * 'enabled': Credential saving is enabled.
-   * 'disabled': Credential saving is disabled.
+   * Defines whether the browser can save login credentials. Possible values are:
+   * 'enabled': Credential saving is allowed.
+   * 'disabled': Credential saving is blocked.
    */
   passwordManager: PasswordManagerType;
   /** A list of extensions or addons that will be loaded to the profile when the profile is started. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons. */
@@ -419,6 +444,7 @@ export interface ProfileResponse {
   launcher: string;
   /** Status information about the profile */
   status: StatusResponse;
+  storage?: ProfileStorageLocation;
 }
 
 /** Representation of a base profile which is used to build profiles from. */
@@ -448,15 +474,15 @@ export interface WebglMeta {
 
 export interface UpdateProfileRequest {
   /**
-   * Tells the mode how the canvas will be spoofed. Possible values:
-   * 'intelligent': Use some noise and in specific cases use the intelligent canvas spoofing. This will result non unique canvas fingerprints.
-   * 'noise': Add some noise to the Canvas generation.
+   * Specifies how the canvas will be spoofed. Possible values:
+   * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+   * 'noise': Add some noise to canvas generation.
    * 'block': Completely block the 2D API.
    * 'off': Turn off the spoofing, use the original settings.
    */
   canvas: CanvasSpoofingType;
   /**
-   * Tells the mode how the WebGL will be spoofed. Possible values:
+   * Specifies how the WebGL will be spoofed. Possible values:
    * 'noise': Add some noise to the WebGL generation
    * 'block': Completely block the 3D API
    * 'off': Turn off the spoofing, use the original settings
@@ -464,7 +490,7 @@ export interface UpdateProfileRequest {
   webgl: WebglSpoofingType;
   webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
   /**
-   * Tells the mode how the Audio will be spoofed. Possible values:
+   * Specifies how the audio will be spoofed. Possible values:
    * 'noise': Add some noise to the Audio generation
    * 'block': Completely block the Audio API
    * 'off': Turn off the spoofing, use the original settings
@@ -477,12 +503,13 @@ export interface UpdateProfileRequest {
   fonts: FontSpoofingTypeFontIListMultiLevelChoice;
   screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
   hardwareConcurrency: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
+  deviceMemory?: DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice;
   /** This website will be opened in the browser when the profile launches. */
   startPage?: string;
   /**
-   * Tells if the browser should support credential saving. Possible values are:
-   * 'enabled': Credential saving is enabled.
-   * 'disabled': Credential saving is disabled.
+   * Defines whether the browser can save login credentials. Possible values are:
+   * 'enabled': Credential saving is allowed.
+   * 'disabled': Credential saving is blocked.
    */
   passwordManager: PasswordManagerType;
   /**
@@ -497,6 +524,7 @@ export interface UpdateProfileRequest {
   name: string;
   /** Profile tags */
   tags?: string[];
+  storage?: ProfileStorageLocation;
   /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
   launcher?: string;
 }
@@ -519,15 +547,15 @@ export interface Preference {
   value: any;
 }
 
-/** Tells where the profile should be exported. */
+/** Defines the target location for profile export. */
 export interface ExportProfileRequest {
-  /** The path where the profile should be exported. */
+  /** Specifies the file path for exporting the profile. */
   path: string;
 }
 
-/** Tells where the profile should be imported from */
+/** Specifies the source location for profile import. */
 export interface ImportProfileRequest {
-  /** The path where the profile should be imported from */
+  /** The file path from which the profile will be imported. */
   path: string;
 }
 
@@ -560,7 +588,9 @@ export enum KnownProfilePersistenceState {
   /** Unsaved */
   Unsaved = "unsaved",
   /** Saved */
-  Saved = "saved"
+  Saved = "saved",
+  /** Syncing */
+  Syncing = "syncing"
 }
 
 /**
@@ -569,7 +599,8 @@ export enum KnownProfilePersistenceState {
  *  this enum contains the known values that the service supports.
  * ### Known values supported by the service
  * **unsaved** \
- * **saved**
+ * **saved** \
+ * **syncing**
  */
 export type ProfilePersistenceState = string;
 
@@ -585,6 +616,8 @@ export enum KnownProfileLifetimeState {
   Terminating = "terminating",
   /** Terminated */
   Terminated = "terminated",
+  /** Locked */
+  Locked = "locked",
   /** Unknown */
   Unknown = "unknown"
 }
@@ -599,9 +632,28 @@ export enum KnownProfileLifetimeState {
  * **running** \
  * **terminating** \
  * **terminated** \
+ * **locked** \
  * **unknown**
  */
 export type ProfileLifetimeState = string;
+
+/** Known values of {@link ProfileStorageLocation} that the service accepts. */
+export enum KnownProfileStorageLocation {
+  /** Local */
+  Local = "local",
+  /** Cloud */
+  Cloud = "cloud"
+}
+
+/**
+ * Defines values for ProfileStorageLocation. \
+ * {@link KnownProfileStorageLocation} can be used interchangeably with ProfileStorageLocation,
+ *  this enum contains the known values that the service supports.
+ * ### Known values supported by the service
+ * **local** \
+ * **cloud**
+ */
+export type ProfileStorageLocation = string;
 
 /** Known values of {@link CanvasSpoofingType} that the service accepts. */
 export enum KnownCanvasSpoofingType {
@@ -819,6 +871,27 @@ export enum KnownHardwareConcurrencySpoofingType {
  */
 export type HardwareConcurrencySpoofingType = string;
 
+/** Known values of {@link DeviceMemorySpoofingType} that the service accepts. */
+export enum KnownDeviceMemorySpoofingType {
+  /** Automatic */
+  Automatic = "automatic",
+  /** Manual */
+  Manual = "manual",
+  /** Off */
+  Off = "off"
+}
+
+/**
+ * Defines values for DeviceMemorySpoofingType. \
+ * {@link KnownDeviceMemorySpoofingType} can be used interchangeably with DeviceMemorySpoofingType,
+ *  this enum contains the known values that the service supports.
+ * ### Known values supported by the service
+ * **automatic** \
+ * **manual** \
+ * **off**
+ */
+export type DeviceMemorySpoofingType = string;
+
 /** Known values of {@link PasswordManagerType} that the service accepts. */
 export enum KnownPasswordManagerType {
   /** Enabled */
@@ -988,7 +1061,7 @@ export type StopProfileResponse = StatusResponse;
 /** Optional parameters. */
 export interface ExportProfileOptionalParams
   extends coreClient.OperationOptions {
-  /** Tells where the profile should be exported. */
+  /** Defines the target location for profile export. */
   body?: ExportProfileRequest;
 }
 
@@ -1005,7 +1078,7 @@ export type DuplicateProfileResponse = ProfileResponse;
 /** Optional parameters. */
 export interface ImportProfileOptionalParams
   extends coreClient.OperationOptions {
-  /** Tells where the profile should be imported from */
+  /** Specifies the source location for profile import. */
   body?: ImportProfileRequest;
 }
 

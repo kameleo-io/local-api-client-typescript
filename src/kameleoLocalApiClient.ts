@@ -57,7 +57,7 @@ export class KameleoLocalApiClient extends coreClient.ServiceClient {
     }
     const defaults: KameleoLocalApiClientOptionalParams = { requestContentType: "application/json; charset=utf-8", allowInsecureConnection: true, retryOptions: { maxRetries: 0 } };
 
-    const packageDetails = `azsdk-js-kameleoLocalApiClient/3.1.0`;
+    const packageDetails = `azsdk-js-kameleoLocalApiClient/3.1.1`;
     const userAgentPrefix =
       options.userAgentOptions && options.userAgentOptions.userAgentPrefix
         ? `${options.userAgentOptions.userAgentPrefix} ${packageDetails}`
@@ -746,5 +746,4 @@ const upgradeProfileOperationSpec: coreClient.OperationSpec = {
   headerParameters: [Parameters.accept],
   serializer
 };
-
 
