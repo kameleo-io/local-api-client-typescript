@@ -15,7 +15,8 @@ import {
     PasswordManagerType,
     AudioSpoofingType,
     WebglSpoofingType,
-    HardwareConcurrencySpoofingType
+    HardwareConcurrencySpoofingType,
+    DeviceMemorySpoofingType
 } from './models';
 
 export class BuilderForCreateProfile {
@@ -60,8 +61,9 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the canvas will be spoofed. Possible values:</para>
-     * <para>'noise': Add some noise to the Canvas generation.</para>
+     * @summary <para>Specifies how the canvas will be spoofed. Possible values:</para>
+     * <para>'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.</para>
+     * <para>'noise': Add some noise to canvas generation.</para>
      * <para>'block': Completely block the 2D API.</para>
      * <para>'off': Turn off the spoofing, use the original settings.</para>
      */
@@ -72,7 +74,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Set the Webgl spoofing. Possible values:</para>
+     * @summary <para>Specifies how the WebGL will be spoofed. Possible values:</para>
      * <para>'noise': Add some noise to the WebGL generation</para>
      * <para>'block': Completely block the 3D API</para>
      * <para>'off': Turn off the spoofing, use the original settings</para>
@@ -84,7 +86,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the WebGL vendor and renderer will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the WebGL vendor and renderer will be spoofed. Possible values:</para>
      * <para>'automatic': The vendor and renderer values comes from the base profile.</para>
      * <para>'manual': Manually set the vendor and renderer values.</para>
      * <para>'off': Turn off the spoofing, use the original settings.</para>
@@ -97,9 +99,9 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the canvas will be spoofed. Possible values:</para>
-     * <para>'noise': Add some noise to the Canvas generation.</para>
-     * <para>'block': Completely block the 2D API.</para>
+     * @summary <para>Specifies how the audio will be spoofed. Possible values:</para>
+     * <para>'noise': Add some noise to the Audio generation</para>
+     * <para>'block': Completely block the Audio API</para>
      * <para>'off': Turn off the spoofing, use the original settings.</para>
      */
      public setAudio(value: AudioSpoofingType): BuilderForCreateProfile {
@@ -109,7 +111,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the Timezone will be spoofed. Possble values:</para>
+     * @summary <para>Specifies how the timezone will be spoofed. Possble values:</para>
      * <para>'automatic': Timezone is automatically set by the IP</para>
      * <para>'manual': Timezone is manually overridden in the profile</para>
      * <para>'off': Turn off the spoofing, use the original settings</para>
@@ -123,10 +125,10 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the Geolocation will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the geolocation will be spoofed. Possible values:</para>
      * <para>'automatic': Automatically set the values based on the IP address</para>
      * <para>'manual': Manually set the longitude and latitude in the profile</para>
-     * <para>'block': Completely block the GeolocationAPI</para>
+     * <para>'block': Completely block the Geolocation API</para>
      * <para>'off': Turn off the spoofing, use the original settings</para>
      */
     public setGeolocation(value: GeolocationSpoofingType, options: GeolocationSpoofingOptions|undefined): BuilderForCreateProfile {
@@ -151,7 +153,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the WebRTC will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the WebRTC will be spoofed. Possible values:</para>
      * <para>'automatic': Automatically set the webRTC public IP by the IP, and generates a random private IP like '2d2f78e7-1b1e-4345-a21b-07c904c98394.local'</para>
      * <para>'manual': Manually override the webRTC public IP and private IP in the profile</para>
      * <para>'block': Block the WebRTC functionality</para>
@@ -165,7 +167,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the Fonts will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the fonts will be spoofed. Possible values:</para>
      * <para>'enabled': Enable fonts spoofing. A list can be provided to override the fonts coming from the base profile.</para>
      * <para>'disable': Disable fonts spoofing.</para>
      */
@@ -197,7 +199,7 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the screen will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the screen will be spoofed. Possible values:</para>
      * <para>'automatic': Automatically override the screen resolution based on the Base Profile.</para>
      * <para>'manual': Manually override the screen resolution.</para>
      * <para>'off': Turn off the spoofing, use the original settings.</para>
@@ -210,13 +212,24 @@ export class BuilderForCreateProfile {
     }
 
     /**
-     * @summary <para>Tells the mode how the HardwareConcurrency will be spoofed. Possible values:</para>
+     * @summary <para>Specifies how the hardwareConcurrency will be spoofed. Possible values:</para>
      * <para>'automatic': Automatically override the HardwareConcurrency based on the Base Profile.</para>
      * <para>'manual': Manually override the HardwareConcurrency. Valid values: 1,2,4,8,16.</para>
      * <para>'off': Turn off the spoofing, use the original settings.</para>
      */
     public setHardwareConcurrency(value: HardwareConcurrencySpoofingType, options: number|undefined): BuilderForCreateProfile {
         this.profileRequest.hardwareConcurrency = { value: value, extra: options };
+        return this;
+    }
+
+    /**
+     * @summary <para>Specifies how the DeviceMemory will be spoofed. Possible values:</para>
+     * <para>'automatic': Automatically override the DeviceMemory based on the Base Profile.</para>
+     * <para>'manual': Manually override the DeviceMemory. Valid values: 0.25, 0.5, 1, 2, 4, 8.</para>
+     * <para>'off': Turn off the spoofing, use the original settings.</para>
+     */
+    public setDeviceMemory(value: DeviceMemorySpoofingType, options: number|undefined): BuilderForCreateProfile {
+        this.profileRequest.deviceMemory = { value: value, extra: options };
         return this;
     }
 
@@ -264,6 +277,7 @@ export class BuilderForCreateProfile {
         this.profileRequest.fonts.value = "enabled";
         this.profileRequest.screen.value = "automatic";
         this.profileRequest.hardwareConcurrency = { value: "automatic", extra: undefined };
+        this.profileRequest.deviceMemory = { value: "automatic", extra: undefined };
         this.profileRequest.launcher = "automatic";
 
         return this;
@@ -304,6 +318,10 @@ export class BuilderForCreateProfile {
                 extra: undefined,
             },
             hardwareConcurrency: {
+                value: "off",
+                extra: undefined,
+            },
+            deviceMemory: {
                 value: "off",
                 extra: undefined,
             },
