@@ -49,6 +49,7 @@ const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/loc
     // for browser fingerprinting protection
     const requestBody = BuilderForCreateProfile
         .forBaseProfile(baseProfiles[0].id)
+        .setName('example profile')
         .setRecommendedDefaults()
         .build();
     const profile = await client.createProfile({
@@ -190,6 +191,7 @@ const baseProfileList = await client.searchBaseProfiles({
 // Set the launcher to 'chromium' so the mobile profile will be started in Chroma browser
 const createProfileRequest = BuilderForCreateProfile
 	.forBaseProfile(baseProfileList[0].id)
+    .setName('automate mobile profiles on desktop example')
 	.setRecommendedDefaults()
 	.setLauncher('chromium')
 	.build();
