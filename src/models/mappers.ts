@@ -120,6 +120,13 @@ export const BaseProfilePreview: coreClient.CompositeMapper = {
         type: {
           name: "String"
         }
+      },
+      webglMeta: {
+        serializedName: "webglMeta",
+        type: {
+          name: "Composite",
+          className: "WebglMeta"
+        }
       }
     }
   }
@@ -199,6 +206,28 @@ export const Browser: coreClient.CompositeMapper = {
       version: {
         serializedName: "version",
         required: true,
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const WebglMeta: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "WebglMeta",
+    modelProperties: {
+      vendor: {
+        serializedName: "vendor",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      renderer: {
+        serializedName: "renderer",
         type: {
           name: "String"
         }
@@ -670,7 +699,11 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
         }
       },
       name: {
+        constraints: {
+          MinLength: 1
+        },
         serializedName: "name",
+        required: true,
         type: {
           name: "String"
         }
@@ -746,9 +779,9 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
       },
       fonts: {
         serializedName: "fonts",
+        required: true,
         type: {
-          name: "Composite",
-          className: "FontSpoofingTypeFontIListMultiLevelChoice"
+          name: "String"
         }
       },
       screen: {
@@ -978,33 +1011,6 @@ export const WebRtcSpoofingOptions: coreClient.CompositeMapper = {
   }
 };
 
-export const FontSpoofingTypeFontIListMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "FontSpoofingTypeFontIListMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Sequence",
-          element: {
-            type: {
-              name: "String"
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
 export const ScreenSpoofingTypeScreenSizeMultiLevelChoice: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
@@ -1176,9 +1182,9 @@ export const ProfileResponse: coreClient.CompositeMapper = {
       },
       fonts: {
         serializedName: "fonts",
+        required: true,
         type: {
-          name: "Composite",
-          className: "FontSpoofingTypeFontIListMultiLevelChoice"
+          name: "String"
         }
       },
       screen: {
@@ -1307,6 +1313,13 @@ export const BaseProfile: coreClient.CompositeMapper = {
           name: "String"
         }
       },
+      webglMeta: {
+        serializedName: "webglMeta",
+        type: {
+          name: "Composite",
+          className: "WebglMeta"
+        }
+      },
       resolution: {
         serializedName: "resolution",
         required: true,
@@ -1324,35 +1337,6 @@ export const BaseProfile: coreClient.CompositeMapper = {
               name: "String"
             }
           }
-        }
-      },
-      webglMeta: {
-        serializedName: "webglMeta",
-        type: {
-          name: "Composite",
-          className: "WebglMeta"
-        }
-      }
-    }
-  }
-};
-
-export const WebglMeta: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "WebglMeta",
-    modelProperties: {
-      vendor: {
-        serializedName: "vendor",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      renderer: {
-        serializedName: "renderer",
-        type: {
-          name: "String"
         }
       }
     }
@@ -1424,9 +1408,9 @@ export const UpdateProfileRequest: coreClient.CompositeMapper = {
       },
       fonts: {
         serializedName: "fonts",
+        required: true,
         type: {
-          name: "Composite",
-          className: "FontSpoofingTypeFontIListMultiLevelChoice"
+          name: "String"
         }
       },
       screen: {

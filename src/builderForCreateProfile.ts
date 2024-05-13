@@ -168,12 +168,11 @@ export class BuilderForCreateProfile {
 
     /**
      * @summary <para>Specifies how the fonts will be spoofed. Possible values:</para>
-     * <para>'enabled': Enable fonts spoofing. A list can be provided to override the fonts coming from the base profile.</para>
+     * <para>'enabled': Enable fonts spoofing.</para>
      * <para>'disable': Disable fonts spoofing.</para>
      */
-    public setFonts(value: FontSpoofingType, options: string[]|undefined): BuilderForCreateProfile {
-        this.profileRequest.fonts.value = value;
-        this.profileRequest.fonts.extra = options;
+    public setFonts(value: FontSpoofingType): BuilderForCreateProfile {
+        this.profileRequest.fonts = value;
 
         return this;
     }
@@ -266,7 +265,6 @@ export class BuilderForCreateProfile {
      * @summary This sets all the profile options to the defaults recommended by Kameleo Team. Please consider providing Proxy settings to your profile.
      */
     public setRecommendedDefaults(): BuilderForCreateProfile {
-        this.profileRequest.name = "";
         this.profileRequest.canvas = "intelligent";
         this.profileRequest.webgl = "off";
         this.profileRequest.webglMeta.value = "automatic";
@@ -274,7 +272,7 @@ export class BuilderForCreateProfile {
         this.profileRequest.timezone.value = "automatic";
         this.profileRequest.geolocation.value = "automatic";
         this.profileRequest.webRtc.value = "automatic";
-        this.profileRequest.fonts.value = "enabled";
+        this.profileRequest.fonts = "enabled";
         this.profileRequest.screen.value = "automatic";
         this.profileRequest.hardwareConcurrency = { value: "automatic", extra: undefined };
         this.profileRequest.deviceMemory = { value: "automatic", extra: undefined };
@@ -285,6 +283,7 @@ export class BuilderForCreateProfile {
 
     private reset(baseProfileId: string): CreateProfileRequest {
         return {
+            name: undefined as unknown as string,
             baseProfileId: baseProfileId,
             canvas: "off",
             webgl: "off",
@@ -309,10 +308,7 @@ export class BuilderForCreateProfile {
                 value: "off",
                 extra: undefined,
             },
-            fonts: {
-                value: "disabled",
-                extra: undefined,
-            },
+            fonts: "disabled",
             screen: {
                 value: "off",
                 extra: undefined,
