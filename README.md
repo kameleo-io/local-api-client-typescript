@@ -1,10 +1,11 @@
 <img src="docs/kameleo-logo.png" width="150" align="right" />
 
 # Kameleo Local API Client
+
 With [Kameleo](https://kameleo.io), you can easily create multiple virtual browser profiles to work with multiple accounts. It helps you hide your actual timezone, geolocation, language, IP address and creates natural browser fingerprints to prevent detection by anti-bot systems. Kameleo is compatible with [Selenium](https://www.selenium.dev/), [Playwright](https://playwright.dev/), and [Puppeteer](https://pptr.dev/) frameworks for automating web scraping tasks. This JavaScript/TypeScript package provides convenient access to the [Local API](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/) REST interface of the Kameleo Client. See the [article](https://help.kameleo.io/hc/en-us/articles/4418166326417) in our knowledge base for Getting Started with Kameleo Automation.
 
-
 # Features
+
 - Stay completely undetected, so websites won't be able to detect that you are using automation tools
 - Start unlimited number of profiles with different natural browser fingerprints
 - Use authenticated HTTP/SOCKS/SSH proxies in browsers
@@ -21,54 +22,56 @@ With [Kameleo](https://kameleo.io), you can easily create multiple virtual brows
 
 > Note: _You need [Automation package](https://kameleo.io/learn-more/automation/) of Kameleo to access the features described below._
 
-
 # Quickstart Guide
 
 ## 1. Install package
+
 ```
 npm install @kameleo/local-api-client
 ```
 
 ## 2. Start the Kameleo.CLI on your computer
+
 ```
-./Kameleo.CLI.exe email="your@email.com" password="Pa$$w0rd"
+./Kameleo.CLI email="your@email.com" password="Pa$$w0rd"
 ```
 
 ## 3. Start a browser with out-of-the-box fingerprinting protection
+
 ```javascript
-const { KameleoLocalApiClient, BuilderForCreateProfile } = require('@kameleo/local-api-client');
+import { KameleoLocalApiClient, BuilderForCreateProfile } from '@kameleo/local-api-client';
 
-(async () => {
-    const client = new KameleoLocalApiClient();
-    const baseProfiles = await client.searchBaseProfiles({
-        deviceType: 'desktop',
-        browserProduct: 'chrome',
-    });
+const client = new KameleoLocalApiClient();
+const baseProfiles = await client.searchBaseProfiles({
+    deviceType: 'desktop',
+    browserProduct: 'chrome',
+});
 
-    // Create a new profile with recommended settings
-    // for browser fingerprinting protection
-    const requestBody = BuilderForCreateProfile
-        .forBaseProfile(baseProfiles[0].id)
-        .setName('example profile')
-        .setRecommendedDefaults()
-        .build();
-    const profile = await client.createProfile({
-        body: requestBody,
-    });
+// Create a new profile with recommended settings
+// for browser fingerprinting protection
+const requestBody = BuilderForCreateProfile
+    .forBaseProfile(baseProfiles[0].id)
+    .setName('example profile')
+    .setRecommendedDefaults()
+    .build();
+const profile = await client.createProfile({
+    body: requestBody,
+});
 
-    // Start the browser
-    await client.startProfile(profile.id);
+// Start the browser
+await client.startProfile(profile.id);
 
-    // At this point you can automate the browser with your favorite framework
-})();
+// At this point you can automate the browser with your favorite framework
 ```
 
 # Automate Kameleo profiles with Selenium
+
 Kameleo gives you the ability to control any supported browser using Selenium. It uses the WebDriver protocol, a W3C specification, and industry-standard to interact with a browser.
 
 You need to import the official [Selenium library](https://www.npmjs.com/package/selenium-webdriver).
+
 ```javascript
-const { Builder } = require('selenium-webdriver');
+import { Builder } from 'selenium-webdriver';
 ```
 
 ```javascript
@@ -90,12 +93,13 @@ await webdriver.get('https://google.com');
 The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_to_selenium/index.js).
 
 # Automate Kameleo profiles with Puppeteer (Chromium-based)
+
 Kameleo lets you control Chromium-based browsers (sorry Firefox fans) using the official [Puppeteer library](https://www.npmjs.com/package/puppeteer). In this simple example you can see how to connect to the browser that Kameleo starts.
 
 You need to import the official [Puppeteer library](https://www.npmjs.com/package/puppeteer).
 
 ```javascript
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 ```
 
 ```javascript
@@ -115,12 +119,13 @@ await page.goto('https://google.com');
 The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_puppeteer/index.js).
 
 # Automate Kameleo profiles with Playwright
+
 Kameleo allows you to control the browser with the official [Playwright library](https://www.npmjs.com/package/playwright). It works little bit different with Chromium-based browsers and Firefox, so we provide an example for both. Here we showcase how you can connect to the browser that is already started by Kameleo.
 
 You need to import the official [Playwright library](https://www.npmjs.com/package/playwright).
 
 ```javascript
-const playwright = require('playwright');
+import playwright from 'playwright';
 ```
 
 You can find more details here: [Using Kameleo with Playwright framework – Kameleo Support Center](https://help.kameleo.io/hc/en-us/articles/4419471627793-Using-Kameleo-with-Playwright-framework).
@@ -148,15 +153,21 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 // Connect to the browser with Playwright
 const kameleoPort = 5050;
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
-// The exact path to the bridge executable is subject to change. Here, we use %LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe
-const localAppDataPath = process.env.LOCALAPPDATA;
-const executablePathExample = `${localAppDataPath}\\Programs\\Kameleo\\pw-bridge.exe`;
+
+// The Playwright framework is not designed to connect to already running
+// browsers. To overcome this limitation, a tool bundled with Kameleo, named
+// pw-bridge will bridge the communication gap between the running Firefox
+// instance and this playwright script.
+// The exact path to the bridge executable is subject to change
+let pwBridgePath = process.env.PW_BRIDGE_PATH;
+if (!pwBridgePath && process.platform === 'win32') {
+    pwBridgePath = `${process.env.LOCALAPPDATA}\\Programs\\Kameleo\\pw-bridge.exe`;
+} else if (!pwBridgePath && process.platform === 'darwin') {
+    pwBridgePath = '/Applications/Kameleo.app/Contents/MacOS/pw-bridge';
+}
+
 const browser = await playwright.firefox.launchPersistentContext('', {
-    // The Playwright framework is not designed to connect to already running
-    // browsers. To overcome this limitation, a tool bundled with Kameleo, named
-    // pw-bridge.exe will bridge the communication gap between the running Firefox
-    // instance and this playwright script.
-    executablePath: executablePathExample,
+    executablePath: pwBridgePath,
     args: [`-target ${browserWSEndpoint}`],
     persistent: true,
     viewport: null,
@@ -175,6 +186,7 @@ await page.goto('https://google.com');
 The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_playwright_to_firefox/index.js).
 
 # Automate mobile profiles
+
 Kameleo can emulate mobile devices in the custom built Chromium.
 
 ```javascript
@@ -215,9 +227,11 @@ await client.startProfileWithOptions(profile.id, {
 
 // At this point you can automate the browser with your favorite framework
 ```
+
 The full example can be found [here](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/automate_mobile_profiles_on_desktop/index.js).
 
 # Example codes
+
 [Several examples](https://github.com/kameleo-io/local-api-examples) have been prepared in a different repository to showcase the most interesting features. Feel free to create a pull request to add new example codes.
 
 - Finding base profiles
@@ -237,12 +251,14 @@ The full example can be found [here](https://github.com/kameleo-io/local-api-exa
 
 > Note: _If you are interested in more information about Kameleo, or have encountered an issue with using it, please check out our [Help Center](https://help.kameleo.io/)._
 
-
 # Endpoints
+
 Available API endpoints with exhaustive descriptions and example values are documented on this [SwaggerHub](https://app.swaggerhub.com/apis/kameleo-team/kameleo-local-api/) page. This package has built-in [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense) support in Visual Studio Code, no extra package installation needed.
 
 # Package
+
 This package can be found on npm here: [@kameleo/local-api-client](https://www.npmjs.com/package/@kameleo/local-api-client?activeTab=readme).
 
 # License
+
 This project is released under MIT License. Please refer the LICENSE.txt for more details.

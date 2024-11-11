@@ -12,6 +12,24 @@ import {
   AddCookiesOptionalParams,
   AddCookiesResponse,
   DeleteCookiesOptionalParams,
+  ListFoldersOptionalParams,
+  ListFoldersOperationResponse,
+  ReadFolderOptionalParams,
+  ReadFolderResponse,
+  UpdateFolderOptionalParams,
+  UpdateFolderResponse,
+  DeleteFolderOptionalParams,
+  DeleteFolderOperationResponse,
+  CreateFolderOptionalParams,
+  CreateFolderResponse,
+  AddProfileToFolderOptionalParams,
+  AddProfileToFolderResponse,
+  RemoveProfileFromFolderOptionalParams,
+  RemoveProfileFromFolderResponse,
+  ReadSharingOptionsOptionalParams,
+  ReadSharingOptionsResponse,
+  ShareGroupOptionalParams,
+  ShareGroupResponse,
   HealthcheckOptionalParams,
   GetUserInfoOptionalParams,
   GetUserInfoResponse,
@@ -57,7 +75,7 @@ export class KameleoLocalApiClient extends coreClient.ServiceClient {
     }
     const defaults: KameleoLocalApiClientOptionalParams = { requestContentType: "application/json; charset=utf-8", allowInsecureConnection: true, retryOptions: { maxRetries: 0 } };
 
-    const packageDetails = `azsdk-js-kameleoLocalApiClient/3.2.0`;
+    const packageDetails = `azsdk-js-kameleoLocalApiClient/3.4.0`;
     const userAgentPrefix =
       options.userAgentOptions && options.userAgentOptions.userAgentPrefix
         ? `${options.userAgentOptions.userAgentPrefix} ${packageDetails}`
@@ -152,6 +170,132 @@ export class KameleoLocalApiClient extends coreClient.ServiceClient {
     return this.sendOperationRequest(
       { guid, options },
       deleteCookiesOperationSpec
+    );
+  }
+
+  /**
+   * Gets the list of folders including subfolders and profiles that are loaded in the current workspace.
+   * @param options The options parameters.
+   */
+  listFolders(
+    options?: ListFoldersOptionalParams
+  ): Promise<ListFoldersOperationResponse> {
+    return this.sendOperationRequest({ options }, listFoldersOperationSpec);
+  }
+
+  /**
+   * Gets the folder with the sepcified Id from the current workspace.
+   * @param guid The unique identifier of the folder.
+   * @param options The options parameters.
+   */
+  readFolder(
+    guid: string,
+    options?: ReadFolderOptionalParams
+  ): Promise<ReadFolderResponse> {
+    return this.sendOperationRequest(
+      { guid, options },
+      readFolderOperationSpec
+    );
+  }
+
+  /**
+   * Updates the details of an existing folder, not including its content.
+   * @param guid The unique identifier of the folder.
+   * @param options The options parameters.
+   */
+  updateFolder(
+    guid: string,
+    options?: UpdateFolderOptionalParams
+  ): Promise<UpdateFolderResponse> {
+    return this.sendOperationRequest(
+      { guid, options },
+      updateFolderOperationSpec
+    );
+  }
+
+  /**
+   * Deletes a folder along with all its subfolders. Profiles within the folder will either be deleted or
+   * moved to the top-level based on the query parameters.
+   * @param guid The unique identifier of the folder.
+   * @param options The options parameters.
+   */
+  deleteFolder(
+    guid: string,
+    options?: DeleteFolderOptionalParams
+  ): Promise<DeleteFolderOperationResponse> {
+    return this.sendOperationRequest(
+      { guid, options },
+      deleteFolderOperationSpec
+    );
+  }
+
+  /**
+   * Creates a new folder.
+   * @param options The options parameters.
+   */
+  createFolder(
+    options?: CreateFolderOptionalParams
+  ): Promise<CreateFolderResponse> {
+    return this.sendOperationRequest({ options }, createFolderOperationSpec);
+  }
+
+  /**
+   * Adds the given profile to the specified folder.
+   * @param guid The unique identifier of the folder.
+   * @param options The options parameters.
+   */
+  addProfileToFolder(
+    guid: string,
+    options?: AddProfileToFolderOptionalParams
+  ): Promise<AddProfileToFolderResponse> {
+    return this.sendOperationRequest(
+      { guid, options },
+      addProfileToFolderOperationSpec
+    );
+  }
+
+  /**
+   * Removes the given profile from the specified folder.
+   * @param guid The unique identifier of the folder.
+   * @param profileId The unique identifier of the profile.
+   * @param options The options parameters.
+   */
+  removeProfileFromFolder(
+    guid: string,
+    profileId: string,
+    options?: RemoveProfileFromFolderOptionalParams
+  ): Promise<RemoveProfileFromFolderResponse> {
+    return this.sendOperationRequest(
+      { guid, profileId, options },
+      removeProfileFromFolderOperationSpec
+    );
+  }
+
+  /**
+   * Reads the sharing options (list of users and roles).
+   * @param options The options parameters.
+   */
+  readSharingOptions(
+    options?: ReadSharingOptionsOptionalParams
+  ): Promise<ReadSharingOptionsResponse> {
+    return this.sendOperationRequest(
+      { options },
+      readSharingOptionsOperationSpec
+    );
+  }
+
+  /**
+   * Updates the share access of the specified folder.
+   * @param guid
+   * @param options The options parameters.
+   */
+  shareGroup(
+    guid: string,
+    options?: ShareGroupOptionalParams
+  ): Promise<ShareGroupResponse> {
+    return this.sendOperationRequest(
+      { guid, options },
+      shareGroupOperationSpec
     );
   }
 
@@ -495,6 +639,150 @@ const deleteCookiesOperationSpec: coreClient.OperationSpec = {
   headerParameters: [Parameters.accept],
   serializer
 };
+const listFoldersOperationSpec: coreClient.OperationSpec = {
+  path: "/folders",
+  httpMethod: "GET",
+  responses: {
+    200: {
+      bodyMapper: Mappers.ListFoldersResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  urlParameters: [Parameters.$host],
+  headerParameters: [Parameters.accept],
+  serializer
+};
+const readFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}",
+  httpMethod: "GET",
+  responses: {
+    200: {
+      bodyMapper: Mappers.FolderResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  urlParameters: [Parameters.$host, Parameters.guid],
+  headerParameters: [Parameters.accept],
+  serializer
+};
+const updateFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}",
+  httpMethod: "PUT",
+  responses: {
+    200: {
+      bodyMapper: Mappers.FolderResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  requestBody: Parameters.body1,
+  urlParameters: [Parameters.$host, Parameters.guid],
+  headerParameters: [Parameters.accept, Parameters.contentType],
+  mediaType: "json",
+  serializer
+};
+const deleteFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}",
+  httpMethod: "DELETE",
+  responses: {
+    200: {
+      bodyMapper: Mappers.DeleteFolderResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  queryParameters: [Parameters.includeProfiles],
+  urlParameters: [Parameters.$host, Parameters.guid],
+  headerParameters: [Parameters.accept],
+  serializer
+};
+const createFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/new",
+  httpMethod: "POST",
+  responses: {
+    200: {
+      bodyMapper: Mappers.FolderResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  requestBody: Parameters.body2,
+  urlParameters: [Parameters.$host],
+  headerParameters: [Parameters.accept, Parameters.contentType],
+  mediaType: "json",
+  serializer
+};
+const addProfileToFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}/add",
+  httpMethod: "POST",
+  responses: {
+    200: {
+      bodyMapper: Mappers.ProfileResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  requestBody: Parameters.body3,
+  urlParameters: [Parameters.$host, Parameters.guid],
+  headerParameters: [Parameters.accept, Parameters.contentType],
+  mediaType: "json",
+  serializer
+};
+const removeProfileFromFolderOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}/{profileId}",
+  httpMethod: "DELETE",
+  responses: {
+    200: {
+      bodyMapper: Mappers.ProfileResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  urlParameters: [Parameters.$host, Parameters.guid, Parameters.profileId],
+  headerParameters: [Parameters.accept],
+  serializer
+};
+const readSharingOptionsOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/share",
+  httpMethod: "GET",
+  responses: {
+    200: {
+      bodyMapper: Mappers.SharingOptionsResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  urlParameters: [Parameters.$host],
+  headerParameters: [Parameters.accept],
+  serializer
+};
+const shareGroupOperationSpec: coreClient.OperationSpec = {
+  path: "/folders/{guid}/share",
+  httpMethod: "POST",
+  responses: {
+    200: {
+      bodyMapper: Mappers.FolderResponse
+    },
+    default: {
+      bodyMapper: Mappers.ProblemResponse
+    }
+  },
+  requestBody: Parameters.body4,
+  urlParameters: [Parameters.$host, Parameters.guid],
+  headerParameters: [Parameters.accept, Parameters.contentType],
+  mediaType: "json",
+  serializer
+};
 const healthcheckOperationSpec: coreClient.OperationSpec = {
   path: "/general/healthcheck",
   httpMethod: "GET",
@@ -567,7 +855,7 @@ const createProfileOperationSpec: coreClient.OperationSpec = {
       bodyMapper: Mappers.ProblemResponse
     }
   },
-  requestBody: Parameters.body1,
+  requestBody: Parameters.body5,
   urlParameters: [Parameters.$host],
   headerParameters: [Parameters.accept, Parameters.contentType],
   mediaType: "json",
@@ -584,7 +872,7 @@ const updateProfileOperationSpec: coreClient.OperationSpec = {
       bodyMapper: Mappers.ProblemResponse
     }
   },
-  requestBody: Parameters.body2,
+  requestBody: Parameters.body6,
   urlParameters: [Parameters.$host, Parameters.guid],
   headerParameters: [Parameters.accept, Parameters.contentType],
   mediaType: "json",
@@ -659,7 +947,7 @@ const startProfileWithOptionsOperationSpec: coreClient.OperationSpec = {
       bodyMapper: Mappers.ProblemResponse
     }
   },
-  requestBody: Parameters.body3,
+  requestBody: Parameters.body7,
   urlParameters: [Parameters.$host, Parameters.guid],
   headerParameters: [Parameters.accept, Parameters.contentType],
   mediaType: "json",
@@ -691,7 +979,7 @@ const exportProfileOperationSpec: coreClient.OperationSpec = {
       bodyMapper: Mappers.ProblemResponse
     }
   },
-  requestBody: Parameters.body4,
+  requestBody: Parameters.body8,
   urlParameters: [Parameters.$host, Parameters.guid],
   headerParameters: [Parameters.accept, Parameters.contentType],
   mediaType: "json",
@@ -723,7 +1011,7 @@ const importProfileOperationSpec: coreClient.OperationSpec = {
       bodyMapper: Mappers.ProblemResponse
     }
   },
-  requestBody: Parameters.body5,
+  requestBody: Parameters.body9,
   urlParameters: [Parameters.$host],
   headerParameters: [Parameters.accept, Parameters.contentType],
   mediaType: "json",
@@ -746,4 +1034,3 @@ const upgradeProfileOperationSpec: coreClient.OperationSpec = {
   headerParameters: [Parameters.accept],
   serializer
 };
-
