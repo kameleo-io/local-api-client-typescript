@@ -277,6 +277,7 @@ export class BuilderForCreateProfile {
         this.profileRequest.hardwareConcurrency = { value: "automatic", extra: undefined };
         this.profileRequest.deviceMemory = { value: "automatic", extra: undefined };
         this.profileRequest.launcher = "automatic";
+        this.profileRequest.startPage = "about:newtab";
 
         return this;
     }

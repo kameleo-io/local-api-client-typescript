@@ -18,7 +18,10 @@ export interface ProblemResponse {
   error?: { [propertyName: string]: string[] };
 }
 
-/** A preview object of a searched base profile. This contains some information about the base profile that will help you choose the right one. */
+/**
+ * Provides a summarized view of a base profile, which encapsulates real-world browser fingerprint configurations used to
+ * instantiate virtual browser profiles. This preview aids in selecting the appropriate base profile from hundreds of thousands available.
+ */
 export interface BaseProfilePreview {
   /** The unique identifier of the base profile. You can use this as a reference to create a new profile from this base profile. */
   id: string;
@@ -121,32 +124,30 @@ export interface CookieRequest {
   expirationDate?: number;
 }
 
-export interface UserInfoResponse {
-  /** The guid of the user. */
-  userId: string;
-  /** The email address of the authenticated user. */
-  email: string;
-  /** A boolean value indicating whether the email address is confirmed. */
-  emailConfirmed: boolean;
-  /** The end date of the authenticated user's current subscription. */
-  subscriptionEnd: Date;
-  /** The capabilities that the authenticated user owns thanks to his current subscription. */
-  capabilities: string[];
-  /** A boolean value indicates whether the subscription is in a grace period and should be renewed immediately. */
-  gracePeriod: boolean;
-  /** The last date when the user authenticated by the app. */
-  lastAppLogin: Date;
-  /** The user's workspace folder path where the profiles are stored. */
-  workspaceFolder: string;
-  localStorage: QuotaStatistics;
-  cloudStorage: QuotaStatistics;
+export interface ListFoldersResponse {
+  /** List of top-level folders, each folder may contain nested folders and cloud profiles. */
+  folders: FolderResponse[];
+  /** List of profiles not associated with any folder. This includes both cloud and local profiles. */
+  profiles: ProfilePreview[];
 }
 
-export interface QuotaStatistics {
-  /** Indicates the current count of profiles accessible to the user, always a non-negative value. */
-  currentUsage: number;
-  /** Indicates the maximum permitted profile count for the user, with null implying no limit. */
-  maximumLimit: number;
+export interface FolderResponse {
+  /** A unique identifier of the folder. */
+  id: string;
+  /** The name of the folder. */
+  name: string;
+  /** Timestamp of the last modification. */
+  lastModifiedAt: Date;
+  /** Name of the user who last modified the folder. */
+  lastModifiedBy: string;
+  /** Timestamp of the creation. */
+  createdAt: Date;
+  /** Name of the user who created the folder. */
+  createdBy: string;
+  /** List of profiles in the current folder. */
+  profiles: ProfilePreview[];
+  /** List of users accessing this folder. */
+  shareAccesses: ShareAccess[];
 }
 
 /** A preview about the profile with some of its properties. */
@@ -170,6 +171,8 @@ export interface ProfilePreview {
   /** Status information about the profile */
   status: StatusResponse;
   storage?: ProfileStorageLocation;
+  /** A unique identifier of the containing folder, or null if not in a folder. This will always be null for locally stored profiles, as only cloud profiles can be added to folders. */
+  folderId: string;
 }
 
 export interface ProxyConnectionTypeServerMultiLevelChoice {
@@ -221,172 +224,49 @@ export interface StatusResponse {
   externalSpoofingEnginePort?: number;
 }
 
-export interface CreateProfileRequest {
-  /** The unique identifier of the base profile. This references the base profile which should be used to build the new profile. */
-  baseProfileId: string;
-  /** Sets a human-readable name for the profile, which is modifiable at any time. */
+export interface ShareAccess {
+  user: User;
+  role: GroupRole;
+  /** Timestamp when the acess was granted to the user. */
+  sharedAt: Date;
+}
+
+export interface User {
+  /** Unique identifier of the user. */
+  id: string;
+  /** Dispaly name of the user. */
   name: string;
-  /** Use tags to categorize profiles by labeling them accordingly. */
-  tags?: string[];
-  /**
-   * Specifies how the canvas will be spoofed. Possible values:
-   * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
-   * 'noise': Add some noise to canvas generation.
-   * 'block': Completely block the 2D API.
-   * 'off': Turn off the spoofing, use the original settings.
-   */
-  canvas: CanvasSpoofingType;
-  /**
-   * Specifies how the WebGL will be spoofed. Possible values:
-   * 'noise': Add some noise to the WebGL generation
-   * 'block': Completely block the 3D API
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  webgl: WebglSpoofingType;
-  webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
-  /**
-   * Specifies how the audio will be spoofed. Possible values:
-   * 'noise': Add some noise to the Audio generation
-   * 'block': Completely block the Audio API
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  audio: AudioSpoofingType;
-  timezone: TimezoneSpoofingTypeTimezoneMultiLevelChoice;
-  geolocation: GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice;
-  proxy: ProxyConnectionTypeServerMultiLevelChoice;
-  webRtc: WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice;
-  /**
-   * Specifies how the fonts will be spoofed. Possible values:
-   * 'enabled': Enable fonts spoofing.
-   * 'disable': Disable fonts spoofing.
-   */
-  fonts: FontSpoofingType;
-  screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
-  hardwareConcurrency?: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
-  deviceMemory?: DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice;
-  /** This website will be opened in the browser when the profile launches. */
-  startPage?: string;
-  /**
-   * Defines whether the browser can save login credentials. Possible values are:
-   * 'enabled': Credential saving is allowed.
-   * 'disabled': Credential saving is blocked.
-   */
-  passwordManager: PasswordManagerType;
-  /** A list of abolute paths from where the profile should load extensions or addons when starting the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons. */
-  extensions?: string[];
-  /** A free text including any notes written by the user. */
-  notes?: string;
-  storage?: ProfileStorageLocation;
-  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
-  launcher?: string;
+  /** Email address of the user. */
+  email: string;
 }
 
-export interface WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice {
-  /**
-   * Specifies how the WebGL vendor and renderer will be spoofed. Possible values:
-   * 'automatic': The vendor and renderer values comes from the base profile.
-   * 'manual': Manually set the vendor and renderer values.
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  value: WebglMetaSpoofingType;
-  /** When the WebGL Meta spoofing is used, these settings can override the values in the base profile. */
-  extra?: WebglMetaSpoofingOptions;
+export interface GroupRole {
+  /** Unique identifier of the role. */
+  id: string;
+  /** Name of the role. */
+  name: string;
+  /** Description of the role. */
+  description: string;
 }
 
-/** When the WebGL Meta spoofing is used, these settings can override the values in the base profile. */
-export interface WebglMetaSpoofingOptions {
-  /** Unmasked vendor */
-  vendor?: string;
-  /** Unmasked renderer */
-  renderer?: string;
+export interface UpdateFolderRequest {
+  /** Human readable name of the new folder. */
+  name: string;
 }
 
-export interface TimezoneSpoofingTypeTimezoneMultiLevelChoice {
-  /**
-   * Specifies how the timezone will be spoofed. Possble values:
-   * 'automatic': Timezone is automatically set by the IP
-   * 'manual': Timezone is manually overridden in the profile
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  value: TimezoneSpoofingType;
-  /** When the Timezone spoofing is set to manual the timezone in Iana format is required. For example: America/Grenada */
-  extra?: string;
+export interface DeleteFolderResponse {
+  deletedFolders: string[];
+  deletedProfiles: string[];
+  movedProfiles: ProfilePreview[];
 }
 
-export interface GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice {
-  /**
-   * Specifies how the geolocation will be spoofed. Possible values:
-   * 'automatic': Automatically set the values based on the IP address
-   * 'manual': Manually set the longitude and latitude in the profile
-   * 'block': Completely block the Geolocation API
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  value: GeolocationSpoofingType;
-  /** When the Geolocation spoofing is set to manual these extra settings will be used as well. */
-  extra?: GeolocationSpoofingOptions;
+export interface CreateFolderRequest {
+  /** Human readable name of the new folder. */
+  name: string;
 }
 
-/** When the Geolocation spoofing is set to manual these extra settings will be used as well. */
-export interface GeolocationSpoofingOptions {
-  /** From -90 to 90 */
-  latitude: number;
-  /** From -180 to 180 */
-  longitude: number;
-}
-
-export interface WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice {
-  /**
-   * Specifies how the WebRTC will be spoofed. Possible values:
-   * 'automatic': Automatically set the webRTC public IP by the IP, and generates a random private IP like '2d2f78e7-1b1e-4345-a21b-07c904c98394.local'
-   * 'manual': Manually override the webRTC public IP and private IP in the profile
-   * 'block': Block the WebRTC functionality
-   * 'off': Turn off the spoofing, use the original settings
-   */
-  value: WebRtcSpoofingType;
-  /** When the WebRTC spoofing is set to manual these extra settings will be used as well. */
-  extra?: WebRtcSpoofingOptions;
-}
-
-/** When the WebRTC spoofing is set to manual these extra settings will be used as well. */
-export interface WebRtcSpoofingOptions {
-  /** The WebRTC local IP address of the machine. It can be an obfuscated value as well. */
-  privateIp: string;
-  /** The WebRTC public IP address of the machine. */
-  publicIp: string;
-}
-
-export interface ScreenSpoofingTypeScreenSizeMultiLevelChoice {
-  /**
-   * Specifies how the screen will be spoofed. Possible values:
-   * 'automatic': Automatically override the screen resolution based on the Base Profile.
-   * 'manual': Manually override the screen resolution.
-   * 'off': Turn off the spoofing, use the original settings.
-   */
-  value: ScreenSpoofingType;
-  /** The screen size of the device in pixels. For example: 1920x1080 */
-  extra?: string;
-}
-
-export interface HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice {
-  /**
-   * Specifies how the hardwareConcurrency will be spoofed. Possible values:
-   * 'automatic': Automatically set the values based on the Base Profile.
-   * 'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.
-   * 'off': Turn off the spoofing, use the original settings.
-   */
-  value: HardwareConcurrencySpoofingType;
-  extra?: number;
-}
-
-export interface DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice {
-  /**
-   * Specifies how the deviceMemory will be spoofed. Possible values:
-   * 'automatic': Automatically set the values based on the Base Profile.
-   * 'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.
-   * 'off': Turn off the spoofing, use the original settings.
-   */
-  value: DeviceMemorySpoofingType;
-  extra?: number;
+export interface AddProfileToFolderRequest {
+  profileId?: string;
 }
 
 export interface ProfileResponse {
@@ -398,7 +278,10 @@ export interface ProfileResponse {
   tags: string[];
   /** Date when the profile was created. */
   createdAt: Date;
-  /** Representation of a base profile which is used to build profiles from. */
+  /**
+   * Provides a full view of a base profile, which encapsulates real-world browser fingerprint configurations used to
+   * instantiate virtual browser profiles.
+   */
   baseProfile: BaseProfile;
   /**
    * Specifies how the canvas will be spoofed. Possible values:
@@ -453,9 +336,14 @@ export interface ProfileResponse {
   /** Status information about the profile */
   status: StatusResponse;
   storage?: ProfileStorageLocation;
+  /** A unique identifier of the containing folder or null if it is not in folder. */
+  folderId: string;
 }
 
-/** Representation of a base profile which is used to build profiles from. */
+/**
+ * Provides a full view of a base profile, which encapsulates real-world browser fingerprint configurations used to
+ * instantiate virtual browser profiles.
+ */
 export interface BaseProfile {
   /** The version of the base profile. As time passes new base profile versions will be introduced. It is recommended to use the latest one. */
   version: string;
@@ -471,6 +359,223 @@ export interface BaseProfile {
   resolution: string;
   /** A list of font types included in the profile */
   fonts: string[];
+}
+
+export interface WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice {
+  /**
+   * Specifies how the WebGL vendor and renderer will be spoofed. Possible values:
+   * 'automatic': The vendor and renderer values comes from the base profile.
+   * 'manual': Manually configure WebGL metadata. For optimal results, choose a video card model similar to your device's to ensure realistic profile masking.
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  value: WebglMetaSpoofingType;
+  /** When the WebGL Meta spoofing is used, these settings can override the values in the base profile. */
+  extra?: WebglMetaSpoofingOptions;
+}
+
+/** When the WebGL Meta spoofing is used, these settings can override the values in the base profile. */
+export interface WebglMetaSpoofingOptions {
+  /** Unmasked vendor */
+  vendor?: string;
+  /** Unmasked renderer */
+  renderer?: string;
+}
+
+export interface TimezoneSpoofingTypeTimezoneMultiLevelChoice {
+  /**
+   * Specifies how the timezone will be spoofed. Possble values:
+   * 'automatic': Timezone is automatically set by the IP
+   * 'manual': Timezone is manually overridden in the profile
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  value: TimezoneSpoofingType;
+  /** When the Timezone spoofing is set to manual the timezone in Iana format is required. For example: America/Grenada */
+  extra?: string;
+}
+
+export interface GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice {
+  /**
+   * Specifies how the geolocation will be spoofed. Possible values:
+   * 'automatic': Automatically set the values based on the IP address
+   * 'manual': Manually set the longitude and latitude in the profile
+   * 'block': Completely block the Geolocation API
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  value: GeolocationSpoofingType;
+  /** When the Geolocation spoofing is set to manual these extra settings will be used as well. */
+  extra?: GeolocationSpoofingOptions;
+}
+
+/** When the Geolocation spoofing is set to manual these extra settings will be used as well. */
+export interface GeolocationSpoofingOptions {
+  /** From -90 to 90 */
+  latitude: number;
+  /** From -180 to 180 */
+  longitude: number;
+}
+
+export interface WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice {
+  /**
+   * Specifies how the WebRTC will be spoofed. Possible values:
+   * 'automatic': Automatically set the webRTC public IP by the IP
+   * 'manual': Manually override the webRTC public IP and private IP in the profile
+   * 'block': Block the WebRTC functionality
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  value: WebRtcSpoofingType;
+  /** When the WebRTC spoofing is set to manual these extra settings will be used as well. */
+  extra?: WebRtcSpoofingOptions;
+}
+
+/** When the WebRTC spoofing is set to manual these extra settings will be used as well. */
+export interface WebRtcSpoofingOptions {
+  /** The WebRTC local IP address of the machine. It can be an obfuscated value as well. */
+  privateIp?: string;
+  /** The WebRTC public IP address of the machine. */
+  publicIp: string;
+}
+
+export interface ScreenSpoofingTypeScreenSizeMultiLevelChoice {
+  /**
+   * Specifies how the screen will be spoofed. Possible values:
+   * 'automatic': Automatically override the screen resolution based on the Base Profile.
+   * 'manual': Manually override the screen resolution.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  value: ScreenSpoofingType;
+  /** The screen size of the device in pixels. For example: 1920x1080 */
+  extra?: string;
+}
+
+export interface HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice {
+  /**
+   * Specifies how the hardwareConcurrency will be spoofed. Possible values:
+   * 'automatic': Automatically set the values based on the Base Profile.
+   * 'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  value: HardwareConcurrencySpoofingType;
+  extra?: number;
+}
+
+export interface DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice {
+  /**
+   * Specifies how the deviceMemory will be spoofed. Possible values:
+   * 'automatic': Automatically set the values based on the Base Profile.
+   * 'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  value: DeviceMemorySpoofingType;
+  extra?: number;
+}
+
+export interface SharingOptionsResponse {
+  /** List of users in your team. */
+  users?: User[];
+  /** List of roles you can give the users. */
+  roles?: GroupRole[];
+}
+
+export interface ShareGroupRequest {
+  /** List of share accesses to the folder. */
+  shareAccesses: ShareAccessRequest[];
+}
+
+export interface ShareAccessRequest {
+  /** Id of the selected role. */
+  roleId: string;
+  /** Id of the selected user. */
+  userId: string;
+}
+
+export interface UserInfoResponse {
+  /** The guid of the user. */
+  userId: string;
+  /** The email address of the authenticated user. */
+  email: string;
+  /** A boolean value indicating whether the email address is confirmed. */
+  emailConfirmed: boolean;
+  /** The end date of the authenticated user's current subscription. */
+  subscriptionEnd: Date;
+  /** The capabilities that the authenticated user owns thanks to his current subscription. */
+  capabilities: string[];
+  /** A boolean value indicates whether the subscription is in a grace period and should be renewed immediately. */
+  gracePeriod: boolean;
+  /** The last date when the user authenticated by the app. */
+  lastAppLogin: Date;
+  /** The user's workspace folder path where the profiles are stored. */
+  workspaceFolder: string;
+  localStorage: QuotaStatistics;
+  cloudStorage: QuotaStatistics;
+}
+
+export interface QuotaStatistics {
+  /** Indicates the current count of profiles accessible to the user, always a non-negative value. */
+  currentUsage: number;
+  /** Indicates the maximum permitted profile count for the user, with -1 implying no limit. */
+  maximumLimit: number;
+}
+
+export interface CreateProfileRequest {
+  /** The unique identifier of the base profile. This references the base profile which should be used to build the new profile. */
+  baseProfileId: string;
+  /** Sets a human-readable name for the profile, which is modifiable at any time. */
+  name: string;
+  /** Id of the folder the profile should created in. */
+  folderId?: string;
+  /** Use tags to categorize profiles by labeling them accordingly. */
+  tags?: string[];
+  /**
+   * Specifies how the canvas will be spoofed. Possible values:
+   * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+   * 'noise': Add some noise to canvas generation.
+   * 'block': Completely block the 2D API.
+   * 'off': Turn off the spoofing, use the original settings.
+   */
+  canvas: CanvasSpoofingType;
+  /**
+   * Specifies how the WebGL will be spoofed. Possible values:
+   * 'noise': Add some noise to the WebGL generation
+   * 'block': Completely block the 3D API
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  webgl: WebglSpoofingType;
+  webglMeta: WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice;
+  /**
+   * Specifies how the audio will be spoofed. Possible values:
+   * 'noise': Add some noise to the Audio generation
+   * 'block': Completely block the Audio API
+   * 'off': Turn off the spoofing, use the original settings
+   */
+  audio: AudioSpoofingType;
+  timezone: TimezoneSpoofingTypeTimezoneMultiLevelChoice;
+  geolocation: GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice;
+  proxy: ProxyConnectionTypeServerMultiLevelChoice;
+  webRtc: WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice;
+  /**
+   * Specifies how the fonts will be spoofed. Possible values:
+   * 'enabled': Enable fonts spoofing.
+   * 'disable': Disable fonts spoofing.
+   */
+  fonts: FontSpoofingType;
+  screen: ScreenSpoofingTypeScreenSizeMultiLevelChoice;
+  hardwareConcurrency?: HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice;
+  deviceMemory?: DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice;
+  /** This website will be opened in the browser when the profile launches. */
+  startPage?: string;
+  /**
+   * Defines whether the browser can save login credentials. Possible values are:
+   * 'enabled': Credential saving is allowed.
+   * 'disabled': Credential saving is blocked.
+   */
+  passwordManager: PasswordManagerType;
+  /** A list of abolute paths from where the profile should load extensions or addons when starting the browser. For chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons. */
+  extensions?: string[];
+  /** A free text including any notes written by the user. */
+  notes?: string;
+  storage?: ProfileStorageLocation;
+  /** This setting determines which browser engine is launched when a profile is started. This can be modified only before the first start. Possible values for Desktop profiles: 'automatic'. Possible values for Mobile profiles: 'chromium', 'external'. */
+  launcher?: string;
 }
 
 export interface UpdateProfileRequest {
@@ -528,6 +633,8 @@ export interface UpdateProfileRequest {
   notes?: string;
   /** Profile name property. The value obtained by file name for existing profiles. For new profiles the value is generated by a random name generator. */
   name: string;
+  /** Id of the folder the profile should be moved to. */
+  folderId?: string;
   /** Profile tags */
   tags?: string[];
   storage?: ProfileStorageLocation;
@@ -981,6 +1088,78 @@ export type AddCookiesResponse = BrowserCookie[];
 /** Optional parameters. */
 export interface DeleteCookiesOptionalParams
   extends coreClient.OperationOptions {}
+
+/** Optional parameters. */
+export interface ListFoldersOptionalParams
+  extends coreClient.OperationOptions {}
+
+/** Contains response data for the listFolders operation. */
+export type ListFoldersOperationResponse = ListFoldersResponse;
+
+/** Optional parameters. */
+export interface ReadFolderOptionalParams extends coreClient.OperationOptions {}
+
+/** Contains response data for the readFolder operation. */
+export type ReadFolderResponse = FolderResponse;
+
+/** Optional parameters. */
+export interface UpdateFolderOptionalParams
+  extends coreClient.OperationOptions {
+  body?: UpdateFolderRequest;
+}
+
+/** Contains response data for the updateFolder operation. */
+export type UpdateFolderResponse = FolderResponse;
+
+/** Optional parameters. */
+export interface DeleteFolderOptionalParams
+  extends coreClient.OperationOptions {
+  /** Flag to indicate if the contained profiles should be deleted (true) or moved to the top-level (false). */
+  includeProfiles?: boolean;
+}
+
+/** Contains response data for the deleteFolder operation. */
+export type DeleteFolderOperationResponse = DeleteFolderResponse;
+
+/** Optional parameters. */
+export interface CreateFolderOptionalParams
+  extends coreClient.OperationOptions {
+  body?: CreateFolderRequest;
+}
+
+/** Contains response data for the createFolder operation. */
+export type CreateFolderResponse = FolderResponse;
+
+/** Optional parameters. */
+export interface AddProfileToFolderOptionalParams
+  extends coreClient.OperationOptions {
+  body?: AddProfileToFolderRequest;
+}
+
+/** Contains response data for the addProfileToFolder operation. */
+export type AddProfileToFolderResponse = ProfileResponse;
+
+/** Optional parameters. */
+export interface RemoveProfileFromFolderOptionalParams
+  extends coreClient.OperationOptions {}
+
+/** Contains response data for the removeProfileFromFolder operation. */
+export type RemoveProfileFromFolderResponse = ProfileResponse;
+
+/** Optional parameters. */
+export interface ReadSharingOptionsOptionalParams
+  extends coreClient.OperationOptions {}
+
+/** Contains response data for the readSharingOptions operation. */
+export type ReadSharingOptionsResponse = SharingOptionsResponse;
+
+/** Optional parameters. */
+export interface ShareGroupOptionalParams extends coreClient.OperationOptions {
+  body?: ShareGroupRequest;
+}
+
+/** Contains response data for the shareGroup operation. */
+export type ShareGroupResponse = FolderResponse;
 
 /** Optional parameters. */
 export interface HealthcheckOptionalParams

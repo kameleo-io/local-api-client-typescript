@@ -1,10 +1,9 @@
-import nodeResolve from "@rollup/plugin-node-resolve";
 import cjs from "@rollup/plugin-commonjs";
-import sourcemaps from "rollup-plugin-sourcemaps";
-import multiEntry from "@rollup/plugin-multi-entry";
 import json from "@rollup/plugin-json";
-
+import multiEntry from "@rollup/plugin-multi-entry";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import nodeBuiltins from "builtin-modules";
+import sourcemaps from "rollup-plugin-sourcemaps";
 
 // #region Warning Handler
 
@@ -17,16 +16,12 @@ function ignoreNiseSinonEval(warning) {
   return (
     warning.code === "EVAL" &&
     warning.id &&
-      (warning.id.includes("node_modules/nise") ||
-        warning.id.includes("node_modules/sinon")) === true
+    (warning.id.includes("node_modules/nise") || warning.id.includes("node_modules/sinon")) === true
   );
 }
 
 function ignoreChaiCircularDependency(warning) {
-  return (
-    warning.code === "CIRCULAR_DEPENDENCY" &&
-    warning.importer && warning.importer.includes("node_modules/chai") === true
-  );
+  return warning.code === "CIRCULAR_DEPENDENCY" && warning.importer && warning.importer.includes("node_modules/chai") === true;
 }
 
 const warningInhibitors = [ignoreChaiCircularDependency, ignoreNiseSinonEval];
@@ -50,56 +45,52 @@ function makeBrowserTestConfig() {
   const config = {
     input: {
       include: ["dist-esm/test/**/*.spec.js"],
-      exclude: ["dist-esm/test/**/node/**"]
+      exclude: ["dist-esm/test/**/node/**"],
     },
     output: {
       file: `dist-test/index.browser.js`,
       format: "umd",
-      sourcemap: true
+      sourcemap: true,
     },
     preserveSymlinks: false,
     plugins: [
       multiEntry({ exports: false }),
       nodeResolve({
-        mainFields: ["module", "browser"]
+        mainFields: ["module", "browser"],
       }),
       cjs(),
       json(),
-      sourcemaps()
+      sourcemaps(),
       //viz({ filename: "dist-test/browser-stats.html", sourcemap: true })
     ],
     onwarn: makeOnWarnForTesting(),
-    // Disable tree-shaking of test code.  In rollup-plugin-node-resolve@5.0.0,
-    // rollup started respecting the "sideEffects" field in package.json.  Since
+    // Disable tree-shaking of test code. In rollup-plugin-node-resolve@5.0.0,
+    // rollup started respecting the "sideEffects" field in package.json. Since
     // our package.json sets "sideEffects=false", this also applies to test
     // code, which causes all tests to be removed by tree-shaking.
-    treeshake: false
+    treeshake: false,
   };
 
   return config;
 }
 
 const defaultConfigurationOptions = {
-  disableBrowserBundle: false
+  disableBrowserBundle: false,
 };
 
 export function makeConfig(pkg, options) {
   options = {
     ...defaultConfigurationOptions,
-    ...(options || {})
+    ...(options || {}),
   };
 
   const baseConfig = {
     // Use the package's module field if it has one
     input: pkg["module"] || "dist-esm/src/index.js",
-    external: [
-      ...nodeBuiltins,
-      ...Object.keys(pkg.dependencies),
-      ...Object.keys(pkg.devDependencies)
-    ],
+    external: [...nodeBuiltins, ...Object.keys(pkg.dependencies), ...Object.keys(pkg.devDependencies)],
     output: { file: "dist/main.js", format: "cjs", sourcemap: true },
     preserveSymlinks: false,
-    plugins: [sourcemaps(), nodeResolve()]
+    plugins: [sourcemaps(), nodeResolve()],
   };
 
   const config = [baseConfig];
