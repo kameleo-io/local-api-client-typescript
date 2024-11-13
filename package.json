@@ -2,7 +2,7 @@
   "name": "@kameleo/local-api-client",
   "author": "Kameleo Team",
   "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
-  "version": "3.2.0",
+  "version": "3.4.0",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -43,7 +43,7 @@
     "rollup-plugin-sourcemaps": "^0.6.3",
     "typescript": "~5.0.0",
     "uglify-js": "^3.4.9",
-    "rimraf": "^3.0.0",
+    "rimraf": "^5.0.5",
     "dotenv": "^16.0.0"
   },
   "homepage": "https://kameleo.io",
@@ -68,14 +68,14 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "npm run clean && tsc && rollup -c 2>&1 && npm run minify",
+    "build": "npm install && npm run clean && tsc && rollup -c 2>&1 && npm run minify",
     "minify": "uglifyjs -c -m --comments --source-map \"content='./dist/main.js.map'\" -o ./dist/main.min.js ./dist/main.js",
     "prepack": "npm run build",
     "pack": "npm pack 2>&1",
     "extract-api": "api-extractor run --local",
     "lint": "echo skipped",
     "audit": "echo skipped",
-    "clean": "rimraf dist dist-browser dist-esm test-dist temp types *.tgz *.log",
+    "clean": "rimraf dist dist-browser dist-esm test-dist temp types --glob *.tgz *.log",
     "build:node": "echo skipped",
     "build:browser": "echo skipped",
     "build:test": "echo skipped",

@@ -392,107 +392,112 @@ export const CookieRequest: coreClient.CompositeMapper = {
   }
 };
 
-export const UserInfoResponse: coreClient.CompositeMapper = {
+export const ListFoldersResponse: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
-    className: "UserInfoResponse",
+    className: "ListFoldersResponse",
     modelProperties: {
-      userId: {
-        serializedName: "userId",
-        required: true,
-        type: {
-          name: "Uuid"
-        }
-      },
-      email: {
-        serializedName: "email",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      emailConfirmed: {
-        serializedName: "emailConfirmed",
-        required: true,
-        type: {
-          name: "Boolean"
-        }
-      },
-      subscriptionEnd: {
-        serializedName: "subscriptionEnd",
-        required: true,
-        type: {
-          name: "DateTime"
-        }
-      },
-      capabilities: {
-        serializedName: "capabilities",
+      folders: {
+        serializedName: "folders",
         required: true,
         type: {
           name: "Sequence",
           element: {
             type: {
-              name: "String"
+              name: "Composite",
+              className: "FolderResponse"
             }
           }
         }
       },
-      gracePeriod: {
-        serializedName: "gracePeriod",
+      profiles: {
+        serializedName: "profiles",
         required: true,
         type: {
-          name: "Boolean"
-        }
-      },
-      lastAppLogin: {
-        serializedName: "lastAppLogin",
-        required: true,
-        type: {
-          name: "DateTime"
-        }
-      },
-      workspaceFolder: {
-        serializedName: "workspaceFolder",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      localStorage: {
-        serializedName: "localStorage",
-        type: {
-          name: "Composite",
-          className: "QuotaStatistics"
-        }
-      },
-      cloudStorage: {
-        serializedName: "cloudStorage",
-        type: {
-          name: "Composite",
-          className: "QuotaStatistics"
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "ProfilePreview"
+            }
+          }
         }
       }
     }
   }
 };
 
-export const QuotaStatistics: coreClient.CompositeMapper = {
+export const FolderResponse: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
-    className: "QuotaStatistics",
+    className: "FolderResponse",
     modelProperties: {
-      currentUsage: {
-        serializedName: "currentUsage",
+      id: {
+        serializedName: "id",
         required: true,
         type: {
-          name: "Number"
+          name: "Uuid"
         }
       },
-      maximumLimit: {
-        serializedName: "maximumLimit",
+      name: {
+        serializedName: "name",
         required: true,
         type: {
-          name: "Number"
+          name: "String"
+        }
+      },
+      lastModifiedAt: {
+        serializedName: "lastModifiedAt",
+        required: true,
+        type: {
+          name: "DateTime"
+        }
+      },
+      lastModifiedBy: {
+        serializedName: "lastModifiedBy",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      createdAt: {
+        serializedName: "createdAt",
+        required: true,
+        type: {
+          name: "DateTime"
+        }
+      },
+      createdBy: {
+        serializedName: "createdBy",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      profiles: {
+        serializedName: "profiles",
+        required: true,
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "ProfilePreview"
+            }
+          }
+        }
+      },
+      shareAccesses: {
+        serializedName: "shareAccesses",
+        required: true,
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "ShareAccess"
+            }
+          }
         }
       }
     }
@@ -591,6 +596,13 @@ export const ProfilePreview: coreClient.CompositeMapper = {
         type: {
           name: "String"
         }
+      },
+      folderId: {
+        serializedName: "folderId",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
       }
     }
   }
@@ -683,23 +695,104 @@ export const StatusResponse: coreClient.CompositeMapper = {
   }
 };
 
-export const CreateProfileRequest: coreClient.CompositeMapper = {
+export const ShareAccess: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
-    className: "CreateProfileRequest",
+    className: "ShareAccess",
     modelProperties: {
-      baseProfileId: {
-        constraints: {
-          MinLength: 1
-        },
-        serializedName: "baseProfileId",
+      user: {
+        serializedName: "user",
+        type: {
+          name: "Composite",
+          className: "User"
+        }
+      },
+      role: {
+        serializedName: "role",
+        type: {
+          name: "Composite",
+          className: "GroupRole"
+        }
+      },
+      sharedAt: {
+        serializedName: "sharedAt",
+        required: true,
+        type: {
+          name: "DateTime"
+        }
+      }
+    }
+  }
+};
+
+export const User: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "User",
+    modelProperties: {
+      id: {
+        serializedName: "id",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
+      },
+      name: {
+        serializedName: "name",
         required: true,
         type: {
           name: "String"
         }
       },
+      email: {
+        serializedName: "email",
+        required: true,
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const GroupRole: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "GroupRole",
+    modelProperties: {
+      id: {
+        serializedName: "id",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
+      },
+      name: {
+        serializedName: "name",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      description: {
+        serializedName: "description",
+        required: true,
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const UpdateFolderRequest: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "UpdateFolderRequest",
+    modelProperties: {
       name: {
         constraints: {
+          MaxLength: 100,
           MinLength: 1
         },
         serializedName: "name",
@@ -707,301 +800,68 @@ export const CreateProfileRequest: coreClient.CompositeMapper = {
         type: {
           name: "String"
         }
-      },
-      tags: {
-        serializedName: "tags",
+      }
+    }
+  }
+};
+
+export const DeleteFolderResponse: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "DeleteFolderResponse",
+    modelProperties: {
+      deletedFolders: {
+        serializedName: "deletedFolders",
+        required: true,
         type: {
           name: "Sequence",
           element: {
             type: {
-              name: "String"
+              name: "Uuid"
             }
           }
         }
       },
-      canvas: {
-        serializedName: "canvas",
+      deletedProfiles: {
+        serializedName: "deletedProfiles",
         required: true,
-        type: {
-          name: "String"
-        }
-      },
-      webgl: {
-        serializedName: "webgl",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      webglMeta: {
-        serializedName: "webglMeta",
-        type: {
-          name: "Composite",
-          className:
-            "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice"
-        }
-      },
-      audio: {
-        serializedName: "audio",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      timezone: {
-        serializedName: "timezone",
-        type: {
-          name: "Composite",
-          className: "TimezoneSpoofingTypeTimezoneMultiLevelChoice"
-        }
-      },
-      geolocation: {
-        serializedName: "geolocation",
-        type: {
-          name: "Composite",
-          className:
-            "GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice"
-        }
-      },
-      proxy: {
-        serializedName: "proxy",
-        type: {
-          name: "Composite",
-          className: "ProxyConnectionTypeServerMultiLevelChoice"
-        }
-      },
-      webRtc: {
-        serializedName: "webRtc",
-        type: {
-          name: "Composite",
-          className: "WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice"
-        }
-      },
-      fonts: {
-        serializedName: "fonts",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      screen: {
-        serializedName: "screen",
-        type: {
-          name: "Composite",
-          className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice"
-        }
-      },
-      hardwareConcurrency: {
-        serializedName: "hardwareConcurrency",
-        type: {
-          name: "Composite",
-          className:
-            "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
-        }
-      },
-      deviceMemory: {
-        serializedName: "deviceMemory",
-        type: {
-          name: "Composite",
-          className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice"
-        }
-      },
-      startPage: {
-        serializedName: "startPage",
-        type: {
-          name: "String"
-        }
-      },
-      passwordManager: {
-        serializedName: "passwordManager",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extensions: {
-        serializedName: "extensions",
         type: {
           name: "Sequence",
           element: {
             type: {
-              name: "String"
+              name: "Uuid"
             }
           }
         }
       },
-      notes: {
-        serializedName: "notes",
+      movedProfiles: {
+        serializedName: "movedProfiles",
+        required: true,
         type: {
-          name: "String"
-        }
-      },
-      storage: {
-        serializedName: "storage",
-        type: {
-          name: "String"
-        }
-      },
-      launcher: {
-        serializedName: "launcher",
-        type: {
-          name: "String"
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "ProfilePreview"
+            }
+          }
         }
       }
     }
   }
 };
 
-export const WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
+export const CreateFolderRequest: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
-    className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice",
+    className: "CreateFolderRequest",
     modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Composite",
-          className: "WebglMetaSpoofingOptions"
-        }
-      }
-    }
-  }
-};
-
-export const WebglMetaSpoofingOptions: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "WebglMetaSpoofingOptions",
-    modelProperties: {
-      vendor: {
-        serializedName: "vendor",
-        type: {
-          name: "String"
-        }
-      },
-      renderer: {
-        serializedName: "renderer",
-        type: {
-          name: "String"
-        }
-      }
-    }
-  }
-};
-
-export const TimezoneSpoofingTypeTimezoneMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "TimezoneSpoofingTypeTimezoneMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "String"
-        }
-      }
-    }
-  }
-};
-
-export const GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className:
-      "GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Composite",
-          className: "GeolocationSpoofingOptions"
-        }
-      }
-    }
-  }
-};
-
-export const GeolocationSpoofingOptions: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "GeolocationSpoofingOptions",
-    modelProperties: {
-      latitude: {
-        serializedName: "latitude",
-        required: true,
-        type: {
-          name: "Number"
-        }
-      },
-      longitude: {
-        serializedName: "longitude",
-        required: true,
-        type: {
-          name: "Number"
-        }
-      }
-    }
-  }
-};
-
-export const WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Composite",
-          className: "WebRtcSpoofingOptions"
-        }
-      }
-    }
-  }
-};
-
-export const WebRtcSpoofingOptions: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "WebRtcSpoofingOptions",
-    modelProperties: {
-      privateIp: {
-        serializedName: "privateIp",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      publicIp: {
-        serializedName: "publicIp",
+      name: {
+        constraints: {
+          MaxLength: 100,
+          MinLength: 1
+        },
+        serializedName: "name",
         required: true,
         type: {
           name: "String"
@@ -1011,66 +871,15 @@ export const WebRtcSpoofingOptions: coreClient.CompositeMapper = {
   }
 };
 
-export const ScreenSpoofingTypeScreenSizeMultiLevelChoice: coreClient.CompositeMapper = {
+export const AddProfileToFolderRequest: coreClient.CompositeMapper = {
   type: {
     name: "Composite",
-    className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice",
+    className: "AddProfileToFolderRequest",
     modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
+      profileId: {
+        serializedName: "profileId",
         type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "String"
-        }
-      }
-    }
-  }
-};
-
-export const HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Number"
-        }
-      }
-    }
-  }
-};
-
-export const DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice: coreClient.CompositeMapper = {
-  type: {
-    name: "Composite",
-    className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice",
-    modelProperties: {
-      value: {
-        serializedName: "value",
-        required: true,
-        type: {
-          name: "String"
-        }
-      },
-      extra: {
-        serializedName: "extra",
-        type: {
-          name: "Number"
+          name: "Uuid"
         }
       }
     }
@@ -1261,6 +1070,13 @@ export const ProfileResponse: coreClient.CompositeMapper = {
         type: {
           name: "String"
         }
+      },
+      folderId: {
+        serializedName: "folderId",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
       }
     }
   }
@@ -1337,6 +1153,590 @@ export const BaseProfile: coreClient.CompositeMapper = {
               name: "String"
             }
           }
+        }
+      }
+    }
+  }
+};
+
+export const WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Composite",
+          className: "WebglMetaSpoofingOptions"
+        }
+      }
+    }
+  }
+};
+
+export const WebglMetaSpoofingOptions: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "WebglMetaSpoofingOptions",
+    modelProperties: {
+      vendor: {
+        serializedName: "vendor",
+        type: {
+          name: "String"
+        }
+      },
+      renderer: {
+        serializedName: "renderer",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const TimezoneSpoofingTypeTimezoneMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "TimezoneSpoofingTypeTimezoneMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className:
+      "GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Composite",
+          className: "GeolocationSpoofingOptions"
+        }
+      }
+    }
+  }
+};
+
+export const GeolocationSpoofingOptions: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "GeolocationSpoofingOptions",
+    modelProperties: {
+      latitude: {
+        serializedName: "latitude",
+        required: true,
+        type: {
+          name: "Number"
+        }
+      },
+      longitude: {
+        serializedName: "longitude",
+        required: true,
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
+export const WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Composite",
+          className: "WebRtcSpoofingOptions"
+        }
+      }
+    }
+  }
+};
+
+export const WebRtcSpoofingOptions: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "WebRtcSpoofingOptions",
+    modelProperties: {
+      privateIp: {
+        serializedName: "privateIp",
+        type: {
+          name: "String"
+        }
+      },
+      publicIp: {
+        serializedName: "publicIp",
+        required: true,
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const ScreenSpoofingTypeScreenSizeMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "String"
+        }
+      }
+    }
+  }
+};
+
+export const HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
+export const DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice",
+    modelProperties: {
+      value: {
+        serializedName: "value",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extra: {
+        serializedName: "extra",
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
+export const SharingOptionsResponse: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "SharingOptionsResponse",
+    modelProperties: {
+      users: {
+        serializedName: "users",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "User"
+            }
+          }
+        }
+      },
+      roles: {
+        serializedName: "roles",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "GroupRole"
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const ShareGroupRequest: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "ShareGroupRequest",
+    modelProperties: {
+      shareAccesses: {
+        serializedName: "shareAccesses",
+        required: true,
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "Composite",
+              className: "ShareAccessRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const ShareAccessRequest: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "ShareAccessRequest",
+    modelProperties: {
+      roleId: {
+        serializedName: "roleId",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
+      },
+      userId: {
+        serializedName: "userId",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
+      }
+    }
+  }
+};
+
+export const UserInfoResponse: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "UserInfoResponse",
+    modelProperties: {
+      userId: {
+        serializedName: "userId",
+        required: true,
+        type: {
+          name: "Uuid"
+        }
+      },
+      email: {
+        serializedName: "email",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      emailConfirmed: {
+        serializedName: "emailConfirmed",
+        required: true,
+        type: {
+          name: "Boolean"
+        }
+      },
+      subscriptionEnd: {
+        serializedName: "subscriptionEnd",
+        required: true,
+        type: {
+          name: "DateTime"
+        }
+      },
+      capabilities: {
+        serializedName: "capabilities",
+        required: true,
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      gracePeriod: {
+        serializedName: "gracePeriod",
+        required: true,
+        type: {
+          name: "Boolean"
+        }
+      },
+      lastAppLogin: {
+        serializedName: "lastAppLogin",
+        required: true,
+        type: {
+          name: "DateTime"
+        }
+      },
+      workspaceFolder: {
+        serializedName: "workspaceFolder",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      localStorage: {
+        serializedName: "localStorage",
+        type: {
+          name: "Composite",
+          className: "QuotaStatistics"
+        }
+      },
+      cloudStorage: {
+        serializedName: "cloudStorage",
+        type: {
+          name: "Composite",
+          className: "QuotaStatistics"
+        }
+      }
+    }
+  }
+};
+
+export const QuotaStatistics: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "QuotaStatistics",
+    modelProperties: {
+      currentUsage: {
+        serializedName: "currentUsage",
+        required: true,
+        type: {
+          name: "Number"
+        }
+      },
+      maximumLimit: {
+        serializedName: "maximumLimit",
+        required: true,
+        type: {
+          name: "Number"
+        }
+      }
+    }
+  }
+};
+
+export const CreateProfileRequest: coreClient.CompositeMapper = {
+  type: {
+    name: "Composite",
+    className: "CreateProfileRequest",
+    modelProperties: {
+      baseProfileId: {
+        constraints: {
+          MinLength: 1
+        },
+        serializedName: "baseProfileId",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      name: {
+        constraints: {
+          MinLength: 1
+        },
+        serializedName: "name",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      folderId: {
+        serializedName: "folderId",
+        type: {
+          name: "Uuid"
+        }
+      },
+      tags: {
+        serializedName: "tags",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      canvas: {
+        serializedName: "canvas",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      webgl: {
+        serializedName: "webgl",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      webglMeta: {
+        serializedName: "webglMeta",
+        type: {
+          name: "Composite",
+          className:
+            "WebglMetaSpoofingTypeWebglMetaSpoofingOptionsMultiLevelChoice"
+        }
+      },
+      audio: {
+        serializedName: "audio",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      timezone: {
+        serializedName: "timezone",
+        type: {
+          name: "Composite",
+          className: "TimezoneSpoofingTypeTimezoneMultiLevelChoice"
+        }
+      },
+      geolocation: {
+        serializedName: "geolocation",
+        type: {
+          name: "Composite",
+          className:
+            "GeolocationSpoofingTypeGeolocationSpoofingOptionsMultiLevelChoice"
+        }
+      },
+      proxy: {
+        serializedName: "proxy",
+        type: {
+          name: "Composite",
+          className: "ProxyConnectionTypeServerMultiLevelChoice"
+        }
+      },
+      webRtc: {
+        serializedName: "webRtc",
+        type: {
+          name: "Composite",
+          className: "WebRtcSpoofingTypeWebRtcSpoofingOptionsMultiLevelChoice"
+        }
+      },
+      fonts: {
+        serializedName: "fonts",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      screen: {
+        serializedName: "screen",
+        type: {
+          name: "Composite",
+          className: "ScreenSpoofingTypeScreenSizeMultiLevelChoice"
+        }
+      },
+      hardwareConcurrency: {
+        serializedName: "hardwareConcurrency",
+        type: {
+          name: "Composite",
+          className:
+            "HardwareConcurrencySpoofingTypeInt32NullableMultiLevelChoice"
+        }
+      },
+      deviceMemory: {
+        serializedName: "deviceMemory",
+        type: {
+          name: "Composite",
+          className: "DeviceMemorySpoofingTypeDoubleNullableMultiLevelChoice"
+        }
+      },
+      startPage: {
+        serializedName: "startPage",
+        type: {
+          name: "String"
+        }
+      },
+      passwordManager: {
+        serializedName: "passwordManager",
+        required: true,
+        type: {
+          name: "String"
+        }
+      },
+      extensions: {
+        serializedName: "extensions",
+        type: {
+          name: "Sequence",
+          element: {
+            type: {
+              name: "String"
+            }
+          }
+        }
+      },
+      notes: {
+        serializedName: "notes",
+        type: {
+          name: "String"
+        }
+      },
+      storage: {
+        serializedName: "storage",
+        type: {
+          name: "String"
+        }
+      },
+      launcher: {
+        serializedName: "launcher",
+        type: {
+          name: "String"
         }
       }
     }
@@ -1473,6 +1873,12 @@ export const UpdateProfileRequest: coreClient.CompositeMapper = {
         required: true,
         type: {
           name: "String"
+        }
+      },
+      folderId: {
+        serializedName: "folderId",
+        type: {
+          name: "Uuid"
         }
       },
       tags: {
