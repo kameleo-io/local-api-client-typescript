@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "module": "es6",
-    "moduleResolution": "node",
-    "strict": true,
-    "target": "es6",
-    "sourceMap": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["es6", "dom"],
     "declaration": true,
-    "outDir": "./dist-esm",
-    "importHelpers": true
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }
