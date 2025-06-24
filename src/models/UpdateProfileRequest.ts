@@ -106,7 +106,7 @@ export interface UpdateProfileRequest {
      */
     name?: string | null;
     /**
-     * Id of the folder the profile should be moved to.
+     * Id of the folder the profile should be moved to. If null it won't be changed, if empty (00000000-0000-0000-0000-000000000000) it will be moved to root.
      * @type {string}
      * @memberof UpdateProfileRequest
      */
@@ -118,77 +118,83 @@ export interface UpdateProfileRequest {
      */
     tags?: Array<string> | null;
     /**
-     *
+     * Sets how the canvas will be spoofed. Values can be 'intelligent', 'noise', 'block', 'off'.
      * @type {CanvasSpoofingType}
      * @memberof UpdateProfileRequest
      */
-    canvas?: CanvasSpoofingType;
+    canvas?: CanvasSpoofingType | null;
     /**
-     *
+     * Sets how the WebGL will be spoofed. Values can be 'noise', 'block', 'off'.
      * @type {WebglSpoofingType}
      * @memberof UpdateProfileRequest
      */
-    webgl?: WebglSpoofingType;
+    webgl?: WebglSpoofingType | null;
     /**
-     *
+     * Sets how the WebGL Vendor and Renderer will be spoofed. Possible values:
+     * 'automatic': The vendor and renderer values comes from the fingerprint.
+     * 'manual': Manually set the vendor and renderer values.
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebglMetaChoice}
      * @memberof UpdateProfileRequest
      */
-    webglMeta?: WebglMetaChoice;
+    webglMeta?: WebglMetaChoice | null;
     /**
-     *
+     * Sets how the Audio will be spoofed. Values can be 'noise', 'block', 'off'.
      * @type {AudioSpoofingType}
      * @memberof UpdateProfileRequest
      */
-    audio?: AudioSpoofingType;
+    audio?: AudioSpoofingType | null;
     /**
-     *
+     * Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'.
      * @type {TimezoneChoice}
      * @memberof UpdateProfileRequest
      */
-    timezone?: TimezoneChoice;
+    timezone?: TimezoneChoice | null;
     /**
-     *
+     * Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {GeolocationChoice}
      * @memberof UpdateProfileRequest
      */
-    geolocation?: GeolocationChoice;
+    geolocation?: GeolocationChoice | null;
     /**
-     *
+     * Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server must be
+     * provided.
      * @type {ProxyChoice}
      * @memberof UpdateProfileRequest
      */
-    proxy?: ProxyChoice;
+    proxy?: ProxyChoice | null;
     /**
-     *
+     * Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {WebRtcChoice}
      * @memberof UpdateProfileRequest
      */
-    webRtc?: WebRtcChoice;
+    webRtc?: WebRtcChoice | null;
     /**
-     *
+     * Sets how the Fonts will be spoofed. Values can be 'enabled', 'disabled'.
      * @type {FontSpoofingType}
      * @memberof UpdateProfileRequest
      */
-    fonts?: FontSpoofingType;
+    fonts?: FontSpoofingType | null;
     /**
-     *
+     * Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be provided
      * @type {ScreenChoice}
      * @memberof UpdateProfileRequest
      */
-    screen?: ScreenChoice;
+    screen?: ScreenChoice | null;
     /**
-     *
+     * Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a
+     * HardwareConcurrencyType must be provided (valid values:1, 2, 4, 8, 12, 16)
      * @type {HardwareConcurrencyChoice}
      * @memberof UpdateProfileRequest
      */
-    hardwareConcurrency?: HardwareConcurrencyChoice;
+    hardwareConcurrency?: HardwareConcurrencyChoice | null;
     /**
-     *
+     * Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a DeviceMemoryType
+     * must be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)
      * @type {DeviceMemoryChoice}
      * @memberof UpdateProfileRequest
      */
-    deviceMemory?: DeviceMemoryChoice;
+    deviceMemory?: DeviceMemoryChoice | null;
     /**
      * Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.
      * @type {string}
@@ -202,11 +208,11 @@ export interface UpdateProfileRequest {
      */
     startPage?: string | null;
     /**
-     *
+     * Indicates whether the browser supports saving login credentials.
      * @type {PasswordManagerType}
      * @memberof UpdateProfileRequest
      */
-    passwordManager?: PasswordManagerType;
+    passwordManager?: PasswordManagerType | null;
     /**
      * A list of extensions or addons should be loaded to the browser when starting the profile. For extensions that are added now, it should be
      * an absolute path.
@@ -223,11 +229,12 @@ export interface UpdateProfileRequest {
      */
     notes?: string | null;
     /**
-     *
+     * Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile
+     * will be migrated.
      * @type {ProfileStorageLocation}
      * @memberof UpdateProfileRequest
      */
-    storage?: ProfileStorageLocation;
+    storage?: ProfileStorageLocation | null;
 }
 
 /**

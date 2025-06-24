@@ -35,17 +35,21 @@ import {
  */
 export interface WebglMetaChoice {
     /**
-     *
+     * Specifies how the WebGL vendor and renderer will be spoofed. Possible values:
+     * 'automatic': The vendor and renderer values comes from the fingerprint.
+     * 'manual': Manually configure WebGL metadata. For optimal results, choose a video card model similar to your device's to ensure realistic
+     * profile masking.
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebglMetaSpoofingType}
      * @memberof WebglMetaChoice
      */
     value: WebglMetaSpoofingType;
     /**
-     *
+     * When the WebGL Meta spoofing is used, these settings can override the values in the fingerprint.
      * @type {WebglMetaSpoofingOptions}
      * @memberof WebglMetaChoice
      */
-    extra?: WebglMetaSpoofingOptions;
+    extra?: WebglMetaSpoofingOptions | null;
 }
 
 /**

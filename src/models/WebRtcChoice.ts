@@ -35,17 +35,21 @@ import {
  */
 export interface WebRtcChoice {
     /**
-     *
+     * Specifies how the WebRTC will be spoofed. Possible values:
+     * 'automatic': Automatically set the webRTC public IP by the IP
+     * 'manual': Manually override the webRTC public IP and private IP in the profile
+     * 'block': Block the WebRTC functionality
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebRtcSpoofingType}
      * @memberof WebRtcChoice
      */
     value: WebRtcSpoofingType;
     /**
-     *
+     * When the WebRTC spoofing is set to manual these extra settings will be used as well.
      * @type {WebRtcSpoofingOptions}
      * @memberof WebRtcChoice
      */
-    extra?: WebRtcSpoofingOptions;
+    extra?: WebRtcSpoofingOptions | null;
 }
 
 /**

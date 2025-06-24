@@ -36,29 +36,41 @@ export interface FingerprintPreview {
      */
     id: string | null;
     /**
-     *
+     * Information about the device of the fingerprint.
      * @type {Device}
      * @memberof FingerprintPreview
      */
-    device: Device;
+    device: Device | null;
     /**
-     *
+     * Information about the OS of the fingerprint.
      * @type {Os}
      * @memberof FingerprintPreview
      */
-    os: Os;
+    os: Os | null;
     /**
-     *
+     * Information about the browser of the fingerprint.
      * @type {Browser}
      * @memberof FingerprintPreview
      */
-    browser: Browser;
+    browser: Browser | null;
     /**
-     *
+     * The GPU details of the fingerprint extracted from WebGL parameters.
      * @type {WebglMeta}
      * @memberof FingerprintPreview
      */
-    webglMeta: WebglMeta;
+    webglMeta: WebglMeta | null;
+    /**
+     * The user agent of the fingerprint.
+     * @type {string}
+     * @memberof FingerprintPreview
+     */
+    userAgent: string | null;
+    /**
+     * The number of fonts in the fingerprint.
+     * @type {number}
+     * @memberof FingerprintPreview
+     */
+    fontsCount: number;
 }
 
 /**
@@ -70,6 +82,8 @@ export function instanceOfFingerprintPreview(value: object): value is Fingerprin
     if (!("os" in value) || value["os"] === undefined) return false;
     if (!("browser" in value) || value["browser"] === undefined) return false;
     if (!("webglMeta" in value) || value["webglMeta"] === undefined) return false;
+    if (!("userAgent" in value) || value["userAgent"] === undefined) return false;
+    if (!("fontsCount" in value) || value["fontsCount"] === undefined) return false;
     return true;
 }
 
@@ -87,6 +101,8 @@ export function FingerprintPreviewFromJSONTyped(json: any, ignoreDiscriminator: 
         os: OsFromJSON(json["os"]),
         browser: BrowserFromJSON(json["browser"]),
         webglMeta: WebglMetaFromJSON(json["webglMeta"]),
+        userAgent: json["userAgent"],
+        fontsCount: json["fontsCount"],
     };
 }
 
@@ -105,5 +121,7 @@ export function FingerprintPreviewToJSONTyped(value?: FingerprintPreview | null,
         os: OsToJSON(value["os"]),
         browser: BrowserToJSON(value["browser"]),
         webglMeta: WebglMetaToJSON(value["webglMeta"]),
+        userAgent: value["userAgent"],
+        fontsCount: value["fontsCount"],
     };
 }

@@ -42,37 +42,43 @@ export interface Fingerprint {
      */
     id: string | null;
     /**
-     *
+     * The user agent of the browser fingerprint.
+     * @type {string}
+     * @memberof Fingerprint
+     */
+    userAgent: string | null;
+    /**
+     * Information about the device of the fingerprint.
      * @type {Device}
      * @memberof Fingerprint
      */
-    device: Device;
+    device: Device | null;
     /**
-     *
+     * Information about the OS of the fingerprint.
      * @type {Os}
      * @memberof Fingerprint
      */
-    os: Os;
+    os: Os | null;
     /**
-     *
+     * Information about the browser of the fingerprint.
      * @type {Browser}
      * @memberof Fingerprint
      */
-    browser: Browser;
+    browser: Browser | null;
     /**
-     *
+     * The GPU details extracted from WebGL parameters.
      * @type {WebglMeta}
      * @memberof Fingerprint
      */
-    webglMeta: WebglMeta;
+    webglMeta: WebglMeta | null;
     /**
-     * The screen size of the device in pixels
+     * The screen size of the device in pixels.
      * @type {string}
      * @memberof Fingerprint
      */
     resolution: string | null;
     /**
-     * A list of font types included in the profile
+     * A list of font types included in the profile.
      * @type {Array<string>}
      * @memberof Fingerprint
      */
@@ -85,6 +91,7 @@ export interface Fingerprint {
 export function instanceOfFingerprint(value: object): value is Fingerprint {
     if (!("version" in value) || value["version"] === undefined) return false;
     if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("userAgent" in value) || value["userAgent"] === undefined) return false;
     if (!("device" in value) || value["device"] === undefined) return false;
     if (!("os" in value) || value["os"] === undefined) return false;
     if (!("browser" in value) || value["browser"] === undefined) return false;
@@ -105,6 +112,7 @@ export function FingerprintFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         version: json["version"],
         id: json["id"],
+        userAgent: json["userAgent"],
         device: DeviceFromJSON(json["device"]),
         os: OsFromJSON(json["os"]),
         browser: BrowserFromJSON(json["browser"]),
@@ -126,6 +134,7 @@ export function FingerprintToJSONTyped(value?: Fingerprint | null, ignoreDiscrim
     return {
         version: value["version"],
         id: value["id"],
+        userAgent: value["userAgent"],
         device: DeviceToJSON(value["device"]),
         os: OsToJSON(value["os"]),
         browser: BrowserToJSON(value["browser"]),

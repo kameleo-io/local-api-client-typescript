@@ -28,7 +28,10 @@ import {
  */
 export interface DeviceMemoryChoice {
     /**
-     *
+     * Specifies how the deviceMemory will be spoofed. Possible values:
+     * 'automatic': Automatically set the values based on the fingerprint.
+     * 'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.
+     * 'off': Turn off the spoofing, use the original settings.
      * @type {DeviceMemorySpoofingType}
      * @memberof DeviceMemoryChoice
      */
