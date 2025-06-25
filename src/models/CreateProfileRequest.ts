@@ -111,7 +111,7 @@ export interface CreateProfileRequest {
      */
     name?: string | null;
     /**
-     * Id of the folder the profile should be created in.
+     * Id of the folder the profile should be created in. If null or empty (00000000-0000-0000-0000-000000000000) the profile will be created in root.
      * @type {string}
      * @memberof CreateProfileRequest
      */
@@ -123,77 +123,93 @@ export interface CreateProfileRequest {
      */
     tags?: Array<string> | null;
     /**
-     *
+     * Specifies how the canvas will be spoofed. Possible values:
+     * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+     * 'noise': Add some noise to canvas generation.
+     * 'block': Completely block the 2D API.
+     * 'off': Turn off the spoofing, use the original settings.
      * @type {CanvasSpoofingType}
      * @memberof CreateProfileRequest
      */
     canvas?: CanvasSpoofingType;
     /**
-     *
+     * Specifies how the WebGL will be spoofed. Possible values:
+     * 'noise': Add some noise to the WebGL generation
+     * 'block': Completely block the 3D API
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebglSpoofingType}
      * @memberof CreateProfileRequest
      */
     webgl?: WebglSpoofingType;
     /**
-     *
+     * Sets how the WebGL Vendor and Renderer will be spoofed. Values can be 'automatic', 'manual', 'off'.
      * @type {WebglMetaChoice}
      * @memberof CreateProfileRequest
      */
-    webglMeta?: WebglMetaChoice;
+    webglMeta?: WebglMetaChoice | null;
     /**
-     *
+     * Specifies how the audio will be spoofed. Possible values:
+     * 'noise': Add some noise to the Audio generation
+     * 'block': Completely block the Audio API
+     * 'off': Turn off the spoofing, use the original settings
      * @type {AudioSpoofingType}
      * @memberof CreateProfileRequest
      */
     audio?: AudioSpoofingType;
     /**
-     *
+     * Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'.
      * @type {TimezoneChoice}
      * @memberof CreateProfileRequest
      */
-    timezone?: TimezoneChoice;
+    timezone?: TimezoneChoice | null;
     /**
-     *
+     * Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {GeolocationChoice}
      * @memberof CreateProfileRequest
      */
-    geolocation?: GeolocationChoice;
+    geolocation?: GeolocationChoice | null;
     /**
-     *
+     * Sets the Proxy connection settings of the profile. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server must
+     * be provided.
      * @type {ProxyChoice}
      * @memberof CreateProfileRequest
      */
-    proxy?: ProxyChoice;
+    proxy?: ProxyChoice | null;
     /**
-     *
+     * Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {WebRtcChoice}
      * @memberof CreateProfileRequest
      */
-    webRtc?: WebRtcChoice;
+    webRtc?: WebRtcChoice | null;
     /**
-     *
+     * Specifies how the fonts will be spoofed. Possible values:
+     * 'automatic': Spoof fonts based on the browser fingerpint.
+     * 'off': Don't spoof fonts, use the real fonts of your machine.
      * @type {FontSpoofingType}
      * @memberof CreateProfileRequest
      */
     fonts?: FontSpoofingType;
     /**
-     *
+     * Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be
+     * provided.
      * @type {ScreenChoice}
      * @memberof CreateProfileRequest
      */
-    screen?: ScreenChoice;
+    screen?: ScreenChoice | null;
     /**
-     *
+     * Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value
+     * (1, 2, 4, 8, 12 or 16) must be provided.
      * @type {HardwareConcurrencyChoice}
      * @memberof CreateProfileRequest
      */
-    hardwareConcurrency?: HardwareConcurrencyChoice;
+    hardwareConcurrency?: HardwareConcurrencyChoice | null;
     /**
-     *
+     * Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value (0.25,
+     * 0.5, 1, 2, 4, 8) must be provided.
      * @type {DeviceMemoryChoice}
      * @memberof CreateProfileRequest
      */
-    deviceMemory?: DeviceMemoryChoice;
+    deviceMemory?: DeviceMemoryChoice | null;
     /**
      * Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.
      * @type {string}
@@ -207,7 +223,9 @@ export interface CreateProfileRequest {
      */
     startPage?: string | null;
     /**
-     *
+     * Defines whether the browser can save login credentials. Possible values are:
+     * 'enabled': Credential saving is allowed.
+     * 'disabled': Credential saving is blocked.
      * @type {PasswordManagerType}
      * @memberof CreateProfileRequest
      */
@@ -226,7 +244,8 @@ export interface CreateProfileRequest {
      */
     notes?: string | null;
     /**
-     *
+     * Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile
+     * will be migrated.
      * @type {ProfileStorageLocation}
      * @memberof CreateProfileRequest
      */

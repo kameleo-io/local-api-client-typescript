@@ -40,6 +40,7 @@ src/models/Preference.ts
 src/models/ProblemDetails.ts
 src/models/ProblemResponse.ts
 src/models/ProfileLifetimeState.ts
+src/models/ProfileMinutesQuota.ts
 src/models/ProfilePreview.ts
 src/models/ProfileResponse.ts
 src/models/ProfileStorageLocation.ts

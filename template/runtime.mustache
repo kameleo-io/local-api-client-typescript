@@ -1,4 +1,4 @@
-{{! from here: https://github.com/OpenAPITools/openapi-generator/blob/v7.11.0/modules/openapi-generator/src/main/resources/typescript-fetch/runtime.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.13.0/modules/openapi-generator/src/main/resources/typescript-fetch/runtime.mustache }}
 /* eslint-disable */
 {{>licenseInfo}}
 
@@ -154,6 +154,7 @@ export class BaseAPI {
             headers,
             body: context.body,
             credentials: this.configuration.credentials,
+            signal: AbortSignal.timeout(60_000),
         };
 
         const overriddenInit: RequestInit = {
@@ -336,10 +337,11 @@ export function exists(json: any, key: string) {
 
 {{^withoutRuntimeChecks}}
 export function mapValues(data: any, fn: (item: any) => any) {
-  return Object.keys(data).reduce(
-    (acc, key) => ({ ...acc, [key]: fn(data[key]) }),
-    {}
-  );
+    const result: { [key: string]: any } = {};
+    for (const key of Object.keys(data)) {
+        result[key] = fn(data[key]);
+    }
+    return result;
 }
 {{/withoutRuntimeChecks}}
 

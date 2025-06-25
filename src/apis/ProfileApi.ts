@@ -46,7 +46,7 @@ import {
 } from "../models/index";
 
 export interface CreateProfileOperationRequest {
-    createProfileRequest?: CreateProfileRequest;
+    createProfileRequest: CreateProfileRequest;
 }
 
 export interface DeleteProfileRequest {
@@ -59,7 +59,7 @@ export interface DuplicateProfileRequest {
 
 export interface ExportProfileOperationRequest {
     profileId: string;
-    exportProfileRequest?: ExportProfileRequest;
+    exportProfileRequest: ExportProfileRequest;
 }
 
 export interface GetProfileStatusRequest {
@@ -85,7 +85,7 @@ export interface StopProfileRequest {
 
 export interface UpdateProfileOperationRequest {
     profileId: string;
-    updateProfileRequest?: UpdateProfileRequest;
+    updateProfileRequest: UpdateProfileRequest;
 }
 
 export interface UpgradeProfileKernelRequest {
@@ -103,6 +103,13 @@ export class ProfileApi extends runtime.BaseAPI {
         requestParameters: CreateProfileOperationRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<ProfileResponse>> {
+        if (requestParameters["createProfileRequest"] == null) {
+            throw new runtime.RequiredError(
+                "createProfileRequest",
+                'Required parameter "createProfileRequest" was null or undefined when calling createProfile().',
+            );
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -127,7 +134,7 @@ export class ProfileApi extends runtime.BaseAPI {
      * Create a new profile based on a selected fingerprint. Supply the required configuration in the request body, then receive the newly  created profile’s full details.
      */
     async createProfile(
-        createProfileRequest?: CreateProfileRequest,
+        createProfileRequest: CreateProfileRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ProfileResponse> {
         const response = await this.createProfileRaw({ createProfileRequest: createProfileRequest }, initOverrides);
@@ -228,6 +235,13 @@ export class ProfileApi extends runtime.BaseAPI {
             );
         }
 
+        if (requestParameters["exportProfileRequest"] == null) {
+            throw new runtime.RequiredError(
+                "exportProfileRequest",
+                'Required parameter "exportProfileRequest" was null or undefined when calling exportProfile().',
+            );
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -256,7 +270,7 @@ export class ProfileApi extends runtime.BaseAPI {
      */
     async exportProfile(
         profileId: string,
-        exportProfileRequest?: ExportProfileRequest,
+        exportProfileRequest: ExportProfileRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ProfileResponse> {
         const response = await this.exportProfileRaw({ profileId: profileId, exportProfileRequest: exportProfileRequest }, initOverrides);
@@ -510,6 +524,13 @@ export class ProfileApi extends runtime.BaseAPI {
             );
         }
 
+        if (requestParameters["updateProfileRequest"] == null) {
+            throw new runtime.RequiredError(
+                "updateProfileRequest",
+                'Required parameter "updateProfileRequest" was null or undefined when calling updateProfile().',
+            );
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -535,7 +556,7 @@ export class ProfileApi extends runtime.BaseAPI {
      */
     async updateProfile(
         profileId: string,
-        updateProfileRequest?: UpdateProfileRequest,
+        updateProfileRequest: UpdateProfileRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ProfileResponse> {
         const response = await this.updateProfileRaw({ profileId: profileId, updateProfileRequest: updateProfileRequest }, initOverrides);

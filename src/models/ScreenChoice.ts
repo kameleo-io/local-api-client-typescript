@@ -28,7 +28,10 @@ import {
  */
 export interface ScreenChoice {
     /**
-     *
+     * Specifies how the screen will be spoofed. Possible values:
+     * 'automatic': Automatically override the screen resolution based on the fingerprint.
+     * 'manual': Manually override the screen resolution.
+     * 'off': Turn off the spoofing, use the original settings.
      * @type {ScreenSpoofingType}
      * @memberof ScreenChoice
      */

@@ -52,8 +52,6 @@ typings/
 .env
 ormconfig.json
 dist/
-dist-esm/
-dist-test/
 temp/
 review/
 

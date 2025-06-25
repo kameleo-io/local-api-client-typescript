@@ -28,17 +28,23 @@ import {
  */
 export interface RunningProfilesStatistics {
     /**
-     *
+     * Quota usage of the profiles that are running with an automation framework.
      * @type {QuotaStatistics}
      * @memberof RunningProfilesStatistics
      */
-    automated?: QuotaStatistics;
+    automated?: QuotaStatistics | null;
     /**
-     *
+     * Quota usage of the profiles that are running manually (were started from GUI or API).
      * @type {QuotaStatistics}
      * @memberof RunningProfilesStatistics
      */
-    manual?: QuotaStatistics;
+    manual?: QuotaStatistics | null;
+    /**
+     * Quota usage of the profiles that are running either manually or with an automation framework.
+     * @type {QuotaStatistics}
+     * @memberof RunningProfilesStatistics
+     */
+    total?: QuotaStatistics | null;
 }
 
 /**
@@ -59,6 +65,7 @@ export function RunningProfilesStatisticsFromJSONTyped(json: any, ignoreDiscrimi
     return {
         automated: json["automated"] == null ? undefined : QuotaStatisticsFromJSON(json["automated"]),
         manual: json["manual"] == null ? undefined : QuotaStatisticsFromJSON(json["manual"]),
+        total: json["total"] == null ? undefined : QuotaStatisticsFromJSON(json["total"]),
     };
 }
 
@@ -74,5 +81,6 @@ export function RunningProfilesStatisticsToJSONTyped(value?: RunningProfilesStat
     return {
         automated: QuotaStatisticsToJSON(value["automated"]),
         manual: QuotaStatisticsToJSON(value["manual"]),
+        total: QuotaStatisticsToJSON(value["total"]),
     };
 }

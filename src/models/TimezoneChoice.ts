@@ -28,7 +28,10 @@ import {
  */
 export interface TimezoneChoice {
     /**
-     *
+     * Specifies how the timezone will be spoofed. Possble values:
+     * 'automatic': Timezone is automatically set by the IP
+     * 'manual': Timezone is manually overridden in the profile
+     * 'off': Turn off the spoofing, use the original settings
      * @type {TimezoneSpoofingType}
      * @memberof TimezoneChoice
      */
