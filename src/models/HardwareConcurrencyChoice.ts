@@ -28,7 +28,10 @@ import {
  */
 export interface HardwareConcurrencyChoice {
     /**
-     *
+     * Specifies how the hardwareConcurrency will be spoofed. Possible values:
+     * 'automatic': Automatically set the values based on the fingerprint.
+     * 'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.
+     * 'off': Turn off the spoofing, use the original settings.
      * @type {HardwareConcurrencySpoofingType}
      * @memberof HardwareConcurrencyChoice
      */

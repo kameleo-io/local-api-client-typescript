@@ -35,17 +35,21 @@ import {
  */
 export interface GeolocationChoice {
     /**
-     *
+     * Specifies how the geolocation will be spoofed. Possible values:
+     * 'automatic': Automatically set the values based on the IP address
+     * 'manual': Manually set the longitude and latitude in the profile
+     * 'block': Completely block the Geolocation API
+     * 'off': Turn off the spoofing, use the original settings
      * @type {GeolocationSpoofingType}
      * @memberof GeolocationChoice
      */
     value: GeolocationSpoofingType;
     /**
-     *
+     * When the Geolocation spoofing is set to manual these extra settings will be used as well.
      * @type {GeolocationSpoofingOptions}
      * @memberof GeolocationChoice
      */
-    extra?: GeolocationSpoofingOptions;
+    extra?: GeolocationSpoofingOptions | null;
 }
 
 /**

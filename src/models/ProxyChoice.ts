@@ -30,17 +30,21 @@ import {
  */
 export interface ProxyChoice {
     /**
-     *
+     * Proxy connection settings of the profiles. Possible values:
+     * 'none': Direct connection without any proxy.
+     * 'http': Use a HTTP proxy for upstream communication.
+     * 'socks5': Use a SOCKS5 proxy for upstream communication.
+     * 'ssh': Use an SSH connection for upstream communication. Basically a SOCKS5 proxy created at the given SSH host.
      * @type {ProxyConnectionType}
      * @memberof ProxyChoice
      */
     value: ProxyConnectionType;
     /**
-     *
+     * Represents a server connection. It can be used as a proxy server connection as well.
      * @type {Server}
      * @memberof ProxyChoice
      */
-    extra?: Server;
+    extra?: Server | null;
 }
 
 /**

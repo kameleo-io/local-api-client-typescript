@@ -33,6 +33,7 @@ export * from "./Preference";
 export * from "./ProblemDetails";
 export * from "./ProblemResponse";
 export * from "./ProfileLifetimeState";
+export * from "./ProfileMinutesQuota";
 export * from "./ProfilePreview";
 export * from "./ProfileResponse";
 export * from "./ProfileStorageLocation";

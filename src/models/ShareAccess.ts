@@ -25,17 +25,17 @@ import { GroupRoleFromJSON, GroupRoleFromJSONTyped, GroupRoleToJSON, GroupRoleTo
  */
 export interface ShareAccess {
     /**
-     *
+     * User accessing this folder.
      * @type {User}
      * @memberof ShareAccess
      */
-    user: User;
+    user: User | null;
     /**
-     *
+     * Level of access to the folder.
      * @type {GroupRole}
      * @memberof ShareAccess
      */
-    role: GroupRole;
+    role: GroupRole | null;
     /**
      * Timestamp when the acess was granted to the user.
      * @type {Date}

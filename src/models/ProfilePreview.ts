@@ -56,11 +56,11 @@ export interface ProfilePreview {
      */
     tags: Array<string> | null;
     /**
-     *
+     * Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server is provided.
      * @type {ProxyChoice}
      * @memberof ProfilePreview
      */
-    proxy: ProxyChoice;
+    proxy: ProxyChoice | null;
     /**
      * Date when the profile was created.
      * @type {Date}
@@ -68,23 +68,23 @@ export interface ProfilePreview {
      */
     createdAt: Date;
     /**
-     *
+     * Device information about the profile. This is derived from the fingerprint.
      * @type {Device}
      * @memberof ProfilePreview
      */
-    device: Device;
+    device: Device | null;
     /**
-     *
+     * Information about the OS of the profile. This is derived from the fingerprint.
      * @type {Os}
      * @memberof ProfilePreview
      */
-    os: Os;
+    os: Os | null;
     /**
-     *
+     * Information about the browser of the profile. This is derived from the fingerprint.
      * @type {Browser}
      * @memberof ProfilePreview
      */
-    browser: Browser;
+    browser: Browser | null;
     /**
      * Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.
      * @type {string}
@@ -92,20 +92,21 @@ export interface ProfilePreview {
      */
     language: string | null;
     /**
-     *
+     * Status information about the profile.
      * @type {StatusResponse}
      * @memberof ProfilePreview
      */
-    status: StatusResponse;
+    status: StatusResponse | null;
     /**
-     *
+     * Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile
+     * will be migrated.
      * @type {ProfileStorageLocation}
      * @memberof ProfilePreview
      */
     storage?: ProfileStorageLocation;
     /**
-     * A unique identifier of the containing folder, or null if not in a folder. This will always be null for locally stored profiles, as only
-     * cloud profiles can be added to folders.
+     * A unique identifier of the containing folder, or empty (00000000-0000-0000-0000-000000000000) if not in a folder.
+     * This will always be empty for locally stored profiles, as only cloud profiles can be added to folders.
      * @type {string}
      * @memberof ProfilePreview
      */

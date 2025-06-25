@@ -128,83 +128,101 @@ export interface ProfileResponse {
      */
     createdAt: Date;
     /**
-     *
+     * Provides a full view of a fingerprint, which encapsulates real-world browser fingerprint configurations used to
+     * instantiate virtual browser profiles.
      * @type {Fingerprint}
      * @memberof ProfileResponse
      */
-    fingerprint: Fingerprint;
+    fingerprint: Fingerprint | null;
     /**
-     *
+     * Specifies how the canvas will be spoofed. Possible values:
+     * 'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.
+     * 'noise': Add some noise to canvas generation.
+     * 'block': Completely block the 2D API.
+     * 'off': Turn off the spoofing, use the original settings.
      * @type {CanvasSpoofingType}
      * @memberof ProfileResponse
      */
     canvas: CanvasSpoofingType;
     /**
-     *
+     * Specifies how the WebGL will be spoofed. Possible values:
+     * 'noise': Add some noise to the WebGL generation
+     * 'block': Completely block the 3D API
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebglSpoofingType}
      * @memberof ProfileResponse
      */
     webgl: WebglSpoofingType;
     /**
-     *
+     * Sets how the WebGL Vendor and Renderer will be spoofed. Possible values:
+     * 'automatic': The vendor and renderer values comes from the fingerprint.
+     * 'manual': Manually set the vendor and renderer values.
+     * 'off': Turn off the spoofing, use the original settings
      * @type {WebglMetaChoice}
      * @memberof ProfileResponse
      */
-    webglMeta: WebglMetaChoice;
+    webglMeta: WebglMetaChoice | null;
     /**
-     *
+     * Specifies how the audio will be spoofed. Possible values:
+     * 'noise': Add some noise to the Audio generation
+     * 'block': Completely block the Audio API
+     * 'off': Turn off the spoofing, use the original settings
      * @type {AudioSpoofingType}
      * @memberof ProfileResponse
      */
     audio: AudioSpoofingType;
     /**
-     *
+     * Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'.
      * @type {TimezoneChoice}
      * @memberof ProfileResponse
      */
-    timezone: TimezoneChoice;
+    timezone: TimezoneChoice | null;
     /**
-     *
+     * Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {GeolocationChoice}
      * @memberof ProfileResponse
      */
-    geolocation: GeolocationChoice;
+    geolocation: GeolocationChoice | null;
     /**
-     *
+     * Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server is provided.
      * @type {ProxyChoice}
      * @memberof ProfileResponse
      */
-    proxy: ProxyChoice;
+    proxy: ProxyChoice | null;
     /**
-     *
+     * Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.
      * @type {WebRtcChoice}
      * @memberof ProfileResponse
      */
-    webRtc: WebRtcChoice;
+    webRtc: WebRtcChoice | null;
     /**
-     *
+     * Specifies how the fonts will be spoofed. Possible values:
+     * 'automatic': Spoof fonts based on the browser fingerpint.
+     * 'off': Don't spoof fonts, use the real fonts of your machine.
      * @type {FontSpoofingType}
      * @memberof ProfileResponse
      */
     fonts: FontSpoofingType;
     /**
-     *
+     * Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be provided
      * @type {ScreenChoice}
      * @memberof ProfileResponse
      */
-    screen: ScreenChoice;
+    screen: ScreenChoice | null;
     /**
-     *
+     * Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a
+     * HardwareConcurrencyType must be provided (valid values:1, 2, 4, 8, 12, 16)
      * @type {HardwareConcurrencyChoice}
      * @memberof ProfileResponse
      */
-    hardwareConcurrency: HardwareConcurrencyChoice;
+    hardwareConcurrency: HardwareConcurrencyChoice | null;
     /**
-     *
+     * Sets the level of device memory spoofing. Values can be 'automatic', 'manual', 'off'.
+     * When value is set to manual, a specific amount of device memory must be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)
      * @type {DeviceMemoryChoice}
      * @memberof ProfileResponse
      */
-    deviceMemory: DeviceMemoryChoice;
+    deviceMemory: DeviceMemoryChoice | null;
     /**
      * Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.
      * @type {string}
@@ -218,7 +236,9 @@ export interface ProfileResponse {
      */
     startPage: string | null;
     /**
-     *
+     * Defines whether the browser can save login credentials. Possible values are:
+     * 'enabled': Credential saving is allowed.
+     * 'disabled': Credential saving is blocked.
      * @type {PasswordManagerType}
      * @memberof ProfileResponse
      */
@@ -237,19 +257,20 @@ export interface ProfileResponse {
      */
     notes: string | null;
     /**
-     *
+     * Status information about the profile.
      * @type {StatusResponse}
      * @memberof ProfileResponse
      */
-    status: StatusResponse;
+    status: StatusResponse | null;
     /**
-     *
+     * Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile
+     * will be migrated.
      * @type {ProfileStorageLocation}
      * @memberof ProfileResponse
      */
     storage?: ProfileStorageLocation;
     /**
-     * A unique identifier of the containing folder or null if it is not in folder.
+     * A unique identifier of the containing folder or empty (00000000-0000-0000-0000-000000000000) if it is not in folder.
      * @type {string}
      * @memberof ProfileResponse
      */

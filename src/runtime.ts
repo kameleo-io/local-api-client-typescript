@@ -150,7 +150,7 @@ export class BaseAPI {
         Object.keys(headers).forEach((key) => (headers[key] === undefined ? delete headers[key] : {}));
 
         const nodeVersion = typeof process !== "undefined" && process.version ? process.version : "v0.0.0";
-        headers["User-Agent"] = `KameleoLocalApiClient/4.0.0 node/${nodeVersion}`;
+        headers["User-Agent"] = `KameleoLocalApiClient/4.1.0 node/${nodeVersion}`;
 
         const initOverrideFn = typeof initOverrides === "function" ? initOverrides : async () => initOverrides;
 
@@ -159,6 +159,7 @@ export class BaseAPI {
             headers,
             body: context.body,
             credentials: this.configuration.credentials,
+            signal: AbortSignal.timeout(60_000),
         };
 
         const overriddenInit: RequestInit = {
@@ -370,7 +371,11 @@ export function exists(json: any, key: string) {
 }
 
 export function mapValues(data: any, fn: (item: any) => any) {
-    return Object.keys(data).reduce((acc, key) => ({ ...acc, [key]: fn(data[key]) }), {});
+    const result: { [key: string]: any } = {};
+    for (const key of Object.keys(data)) {
+        result[key] = fn(data[key]);
+    }
+    return result;
 }
 
 export function canConsumeForm(consumes: Consume[]): boolean {

@@ -27,6 +27,13 @@ import {
     QuotaStatisticsToJSON,
     QuotaStatisticsToJSONTyped,
 } from "./QuotaStatistics";
+import type { ProfileMinutesQuota } from "./ProfileMinutesQuota";
+import {
+    ProfileMinutesQuotaFromJSON,
+    ProfileMinutesQuotaFromJSONTyped,
+    ProfileMinutesQuotaToJSON,
+    ProfileMinutesQuotaToJSONTyped,
+} from "./ProfileMinutesQuota";
 
 /**
  *
@@ -89,17 +96,17 @@ export interface UserInfoResponse {
      */
     workspaceFolder: string | null;
     /**
-     *
+     * Current usage and maximum limit for local profiles.
      * @type {QuotaStatistics}
      * @memberof UserInfoResponse
      */
-    localStorage: QuotaStatistics;
+    localStorage: QuotaStatistics | null;
     /**
-     *
+     * Current usage and maximum limit for cloud profiles.
      * @type {QuotaStatistics}
      * @memberof UserInfoResponse
      */
-    cloudStorage: QuotaStatistics;
+    cloudStorage: QuotaStatistics | null;
     /**
      * Indicates if the user has a team subscription. This can also be true if the user does not have any team members yet.
      * @type {boolean}
@@ -119,17 +126,29 @@ export interface UserInfoResponse {
      */
     teamRole: string | null;
     /**
-     *
+     * Current usage and maximum limit of running manual and automated profiles for the logged-in user.
      * @type {RunningProfilesStatistics}
      * @memberof UserInfoResponse
      */
-    userProfiles?: RunningProfilesStatistics;
+    runningUserProfiles?: RunningProfilesStatistics | null;
     /**
-     *
+     * Current usage and maximum limit of running manual and automated profiles across the user's team.
      * @type {RunningProfilesStatistics}
      * @memberof UserInfoResponse
      */
-    teamProfiles?: RunningProfilesStatistics;
+    runningTeamProfiles?: RunningProfilesStatistics | null;
+    /**
+     * Current usage and maximum limit of running manual and automated profiles across the tenant.
+     * @type {RunningProfilesStatistics}
+     * @memberof UserInfoResponse
+     */
+    runningTenantProfiles?: RunningProfilesStatistics | null;
+    /**
+     * Current usage and maximum limit of profile minutes across the tenant.
+     * @type {ProfileMinutesQuota}
+     * @memberof UserInfoResponse
+     */
+    profileMinutes?: ProfileMinutesQuota | null;
 }
 
 /**
@@ -176,8 +195,13 @@ export function UserInfoResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         hasTeamSubscription: json["hasTeamSubscription"],
         teamId: json["teamId"],
         teamRole: json["teamRole"],
-        userProfiles: json["userProfiles"] == null ? undefined : RunningProfilesStatisticsFromJSON(json["userProfiles"]),
-        teamProfiles: json["teamProfiles"] == null ? undefined : RunningProfilesStatisticsFromJSON(json["teamProfiles"]),
+        runningUserProfiles:
+            json["runningUserProfiles"] == null ? undefined : RunningProfilesStatisticsFromJSON(json["runningUserProfiles"]),
+        runningTeamProfiles:
+            json["runningTeamProfiles"] == null ? undefined : RunningProfilesStatisticsFromJSON(json["runningTeamProfiles"]),
+        runningTenantProfiles:
+            json["runningTenantProfiles"] == null ? undefined : RunningProfilesStatisticsFromJSON(json["runningTenantProfiles"]),
+        profileMinutes: json["profileMinutes"] == null ? undefined : ProfileMinutesQuotaFromJSON(json["profileMinutes"]),
     };
 }
 
@@ -205,7 +229,9 @@ export function UserInfoResponseToJSONTyped(value?: UserInfoResponse | null, ign
         hasTeamSubscription: value["hasTeamSubscription"],
         teamId: value["teamId"],
         teamRole: value["teamRole"],
-        userProfiles: RunningProfilesStatisticsToJSON(value["userProfiles"]),
-        teamProfiles: RunningProfilesStatisticsToJSON(value["teamProfiles"]),
+        runningUserProfiles: RunningProfilesStatisticsToJSON(value["runningUserProfiles"]),
+        runningTeamProfiles: RunningProfilesStatisticsToJSON(value["runningTeamProfiles"]),
+        runningTenantProfiles: RunningProfilesStatisticsToJSON(value["runningTenantProfiles"]),
+        profileMinutes: ProfileMinutesQuotaToJSON(value["profileMinutes"]),
     };
 }
